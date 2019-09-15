@@ -2,7 +2,7 @@
 <package>
   <name>gyro_gazebo</name>
   <version>0.0.0</version>
-  <description>A gyro stabilized moto description</description>
+  <description>A gyro stabilized moto gazebo</description>
 
   <maintainer email="daniel_regner@hotmail.com">Daniel Regner</maintainer>
 
@@ -16,13 +16,11 @@
 
   <buildtool_depend>catkin</buildtool_depend>
 
-  <buildtool_depend>catkin</buildtool_depend>
-
   <run_depend>gazebo_plugins</run_depend>
   <run_depend>gazebo_ros</run_depend>
   <run_depend>gazebo_ros_control</run_depend>
-  <run_depend>rrbot_control</run_depend>
-  <run_depend>rrbot_description</run_depend>
+  <run_depend>gyro_control</run_depend>
+  <run_depend>gyro_description</run_depend>
   <run_depend>xacro</run_depend>
 
 

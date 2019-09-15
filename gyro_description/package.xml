@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <package>
-  <name>gyro_control</name>
+  <name>gyro_description</name>
   <version>0.0.0</version>
   <description>A gyro stabilized moto description</description>
 

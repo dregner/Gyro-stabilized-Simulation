@@ -1,6 +1,6 @@
 <?xml version="1.0" ?>
-<sdf version="1.5">
-    <world name="camera">
+<sdf version="1.4">
+    <world name="basic">
 
         <scene>
             <sky>
@@ -14,7 +14,7 @@
                 <type>linear</type>
                 <start>15</start>
                 <end>200</end>
-                <desity>0.7</desity>
+                <density>0.7</density>
             </fog>
         </scene>
 
@@ -38,11 +38,7 @@
         </include>
 
 
-        <!-- Only one ROS interface plugin is required per world, as any other plugin can connect a Gazebo
-        topic to a ROS topic (or vise versa). -->
-        <plugin name="ros_interface_plugin" filename="librotors_gazebo_ros_interface_plugin.so"/>
-
-        A physics behind the codes
+        <!-- A physics behind the codes -->
         <spherical_coordinates>
             <surface_model>EARTH_WGS84</surface_model>
             <latitude_deg>-22.905</latitude_deg>
@@ -74,10 +70,11 @@
         <!-- Unser Interface -->
         <gui fullscreen='0'>
             <camera name='user_camera'>
-                <pose frame=''>-4 -39 2.58 0 0 1.57</pose>
+                <pose frame=''>-2 -3.37 2.5 0 0.4 1.17</pose>
                 <view_controller>orbit</view_controller>
                 <projection_type>perspective</projection_type>
             </camera>
         </gui>
+
     </world>
 </sdf>
