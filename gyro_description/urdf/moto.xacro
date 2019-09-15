@@ -1,79 +1,85 @@
 <?xml version="1.0"?>
 
-<robot name="moto" xmlns:xacro="http://ros.org/wiki/xacro">
+<robot name="moto" 
+    xmlns:xacro="http://ros.org/wiki/xacro">
 
-<!--    Properties    -->
-<!-- <xacro:property name="namespace" value="moto"/> -->
-<xacro:property name="PI" value="3.1415926535897931"/>
-<xacro:property name="h" value=".05"/>
-<xacro:property name="height" value=".2"/>
-<xacro:property name="width" value="1"/>
-<xacro:property name="length" value="2"/>
-<xacro:property name="radius" value=".3"/>
-<xacro:property name="mass_base" value="0.5"/>
-<xacro:property name="mass_wheel" value="0.2"/>
-<xacro:property name="mass_gyro" value="1"/>
+    <!--    Properties    -->
+    <!-- <xacro:property name="namespace" value="moto"/> -->
+    <xacro:property name="PI" value="3.1415926535897931"/>
 
-    <!-- Macro for the inertial properties -->
+    <!-- Properties of base -->
+    <xacro:property name="height" value=".2"/>
+    <xacro:property name="width" value="1.2"/>
+    <xacro:property name="length" value="2"/>
+    <xacro:property name="mass_base" value="1"/>
+
+    <!-- Properties of wheels    -->
+    <xacro:property name="radius" value="0.3"/>
+    <xacro:property name="h" value=".05"/>
+    <xacro:property name="mass_wheel" value="0.2"/>
+
+    <!-- Properties from gyro support -->
+    <xacro:property name="mass_support" value="0.2"/>
+    <xacro:property name="h_support" value="0.5"/>
+    <xacro:property name="w_support" value="0.1"/>
+
+    <!-- Propertis of a gyroscope -->
+    <xacro:property name="radius_gyro" value=".4"/>
+    <xacro:property name="h_gyro" value=".1"/>
+    <xacro:property name="mass_gyro" value="3"/>
 
 
-  <!-- Used for fixing robot to Gazebo 'base_link' -->
-
-
-
+    <!-- Include Gazebo association -->
+    <xacro:include filename="$(find gyro_description)/urdf/moto.gazebo"/> 
+    <!-- Including Color material for Gazebo -->
+    <xacro:include filename="$(find gyro_description)/urdf/materials.xacro"/>
     <link name="base_link">
-    <collision>
-      <origin xyz="0 0 ${height/2}" rpy="0 0 0"/>
-      <geometry>
-	        <box size="${length} ${width} ${height}"/>
-      </geometry>
-    </collision>
+        <collision>
+            <origin xyz="0 0 ${height/2}" rpy="0 0 0"/>
+            <geometry>
+                <box size="${length} ${width} ${height}"/>
+            </geometry>
+        </collision>
+        <visual>
+            <origin xyz="0 0 ${height/2}" rpy="0 0 0"/>
+            <geometry>
+                <box size="${length} ${width} ${height}"/>
+            </geometry>
+            <material name="orange"/>
+        </visual>
+        <inertial>
+            <origin xyz="0 0 ${height/2}" rpy="0 0 0"/>
+            <mass value="${mass_base}"/>
+            <inertia ixx="${mass_base / 12.0 * (height*height + width*width)}" ixy="0.0" ixz="0.0" iyy="${mass_base / 12.0 * (height*height + length*length)}" iyz="0.0" izz="${mass_base / 12.0 * (length*length + width*width)}"/>
+        </inertial>
+    </link>
 
-    <visual>
-      <origin xyz="0 0 ${height/2}" rpy="0 0 0"/>
-      <geometry>
-	    <box size="${length} ${width} ${height}"/>
-      </geometry>
-      <material name="orange"/>
-    </visual>
-
-    <inertial>
-      <origin xyz="0 0 ${height/2}" rpy="0 0 0"/>
-      <mass value="${mass_base}"/>
-      <inertia
-	  ixx="${mass_base/ 12.0 * (height*height + width*width)}" ixy="0.0" ixz="0.0"
-	  iyy="${mass_base / 12.0 * (height*height + length*length)}" iyz="0.0"
-	  izz="${mass_base / 12.0 * (length*length + width*width)}"/>
-    </inertial> 
-  </link>
-
- <joint name="front_wheel_joint" type="continuous">
+    <joint name="front_wheel_joint" type="continuous">
         <origin xyz="${length/2} 0.0 ${height/2}" rpy="0.0 0.0 0.0"/>
         <parent link="base_link"/>
-        <child link="front_wheel"/>
+        <child link="front_wheel_link"/>
         <axis xyz="0 1 0"/>
         <!-- <limit lower="0.0" upper="0.0" effort="0.0" velocity="0.0"/> -->
     </joint>
-
 
     <joint name="back_wheel_joint" type="continuous">
         <origin xyz="${-length/2} 0.0 ${height/2}" rpy="0.0 0.0 0.0"/>
         <parent link="base_link"/>
-        <child link="back_wheel"/>
+        <child link="back_wheel_link"/>
         <axis xyz="0 1 0"/>
         <!-- <limit lower="0.0" upper="0.0" effort="0.0" velocity="0.0"/> -->
     </joint>
 
-    <link name="front_wheel">
+    <link name="front_wheel_link">
         <visual>
-        <origin xyz="0.0 0.0 0.0" rpy="${PI/2} 0.0 0.0"/> 
-        <geometry>
-            <cylinder radius="${radius}" length="${h}"/>
-            <!-- <mesh filename="${mesh_base}" scale="1.0"/> -->
-        </geometry>  
+            <origin xyz="0.0 0.0 0.0" rpy="${PI/2} 0.0 0.0"/>
+            <geometry>
+                <cylinder radius="${radius}" length="${h}"/>
+                <!-- <mesh filename="${mesh_base}" scale="1.0"/> -->
+            </geometry>
         </visual>
         <collision>
-        <origin xyz="0.0 0.0 0.0" rpy="${PI/2} 0.0 0.0"/> 
+            <origin xyz="0.0 0.0 0.0" rpy="${PI/2} 0.0 0.0"/>
             <geometry>
                 <cylinder radius="${radius}" length="${h}"/>
                 <!-- <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/> -->
@@ -82,40 +88,194 @@
         <inertial>
             <origin xyz="0.0 0.0 0.0" rpy="${PI/2} 0.0 0.0"/>
             <mass value="${mass_wheel}"/>
-            <inertia
-            ixx="${mass_wheel / 12.0 * (3*radius*radius + h*h)}" ixy="0.0" ixz="0.0"
-            iyy="${mass_wheel / 12.0 * (3*radius*radius + h*h)}" iyz="0.0"
-            izz="${mass_wheel / 2.0 * (radius*radius)}"/> 
+            <inertia ixx="${mass_wheel / 12.0 * (3*radius*radius + h*h)}" ixy="0.0" ixz="0.0" iyy="${mass_wheel / 12.0 * (3*radius*radius + h*h)}" iyz="0.0" izz="${mass_wheel / 2.0 * (radius*radius)}"/>
         </inertial>
     </link>
 
-    <link name="back_wheel">
-
+    <link name="back_wheel_link">
         <visual>
-        <origin xyz="0.0 0.0 0.0" rpy="${PI/2} 0.0 0.0"/> 
-        <geometry>
-            <cylinder radius="${radius}" length="${h}"/>
-            <!-- <mesh filename="${mesh_base}" scale="1.0"/> -->
-        </geometry>  
+            <origin xyz="0.0 0.0 0.0" rpy="${PI/2} 0.0 0.0"/>
+            <geometry>
+                <cylinder radius="${radius}" length="${h}"/>
+                <!-- <mesh filename="${mesh_base}" scale="1.0"/> -->
+            </geometry>
         </visual>
-
         <collision>
-        <origin xyz="0.0 0.0 0.0" rpy="${PI/2} 0.0 0.0"/> 
+            <origin xyz="0.0 0.0 0.0" rpy="${PI/2} 0.0 0.0"/>
             <geometry>
                 <cylinder radius="${radius}" length="${h}"/>
                 <!-- <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/> -->
             </geometry>
         </collision>
-
         <inertial>
             <origin xyz="0.0 0.0 0.0" rpy="${PI/2} 0.0 0.0"/>
             <mass value="${mass_wheel}"/>
-            <inertia
-            ixx="${mass_wheel / 12.0 * (3*radius*radius + h*h)}" ixy="0.0" ixz="0.0"
-            iyy="${mass_wheel / 12.0 * (3*radius*radius + h*h)}" iyz="0.0"
-            izz="${mass_wheel / 2.0 * (radius*radius)}"/> 
+            <inertia ixx="${mass_wheel / 12.0 * (3*radius*radius + h*h)}" ixy="0.0" ixz="0.0" iyy="${mass_wheel / 12.0 * (3*radius*radius + h*h)}" iyz="0.0" izz="${mass_wheel / 2.0 * (radius*radius)}"/>
         </inertial>
-        
+    </link>
+
+    <joint name="support_left_joint" type="fixed">
+        <origin xyz="0.0 ${(width - w_support)/2} ${height}" rpy="0.0 0.0 0.0"/>
+        <parent link="base_link"/>
+        <child link="support_left_link"/>
+        <axis xyz="0.0 0.0 1.0"/>
+    </joint>
+
+    <link name="support_left_link">
+        <visual>
+            <origin xyz="0.0 0.0 ${h_support/2}" rpy="0 0 0"/>
+            <geometry>
+                <box size="${w_support} ${w_support} ${h_support}"/>
+                <!-- <mesh filename="${mesh_base}" scale="1.0"/> -->
+            </geometry>
+        </visual>
+        <collision>
+            <origin xyz="0.0 0.0 ${h_support/2}" rpy="0 0 0"/>
+            <geometry>
+                <box size="${w_support} ${w_support} ${h_support}"/>
+                <!-- <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/> -->
+            </geometry>
+        </collision>
+        <inertial>
+            <origin xyz="0 0 ${h_support/2}" rpy="0 0 0"/>
+            <mass value="${mass_support/4}"/>
+            <inertia ixx="${(mass_support/4) / 12.0 * (h_support*h_support + w_support*w_support)}" ixy="0.0" ixz="0.0" iyy="${(mass_support/4) / 12.0 * (h_support*h_support + w_support*w_support)}" iyz="0.0" izz="${(mass_support/4) / 12.0 * (w_support*w_support + w_support*w_support)}"/>
+        </inertial>
+    </link>
+
+    <joint name="support_right_joint" type="fixed">
+        <origin xyz="0.0 ${-(width - w_support)/2} ${height}" rpy="0.0 0.0 0.0"/>
+        <parent link="base_link"/>
+        <child link="support_right_link"/>
+        <axis xyz="0.0 0.0 1.0"/>
+    </joint>
+
+    <link name="support_right_link">
+        <visual>
+            <origin xyz="0.0 0.0 ${h_support/2}" rpy="0 0 0"/>
+            <geometry>
+                <box size="${w_support} ${w_support} ${h_support}"/>
+                <!-- <mesh filename="${mesh_base}" scale="1.0"/> -->
+            </geometry>
+        </visual>
+        <collision>
+            <origin xyz="0.0 0.0 ${h_support/2}" rpy="0 0 0"/>
+            <geometry>
+                <box size="${w_support} ${w_support} ${h_support}"/>
+                <!-- <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/> -->
+            </geometry>
+        </collision>
+        <inertial>
+            <origin xyz="0 0 ${h_support/2}" rpy="0 0 0"/>
+            <mass value="${mass_support/4}"/>
+            <inertia ixx="${(mass_support/4) / 12.0 * (h_support*h_support + w_support*w_support)}" ixy="0.0" ixz="0.0" iyy="${(mass_support/4) / 12.0 * (h_support*h_support + w_support*w_support)}" iyz="0.0" izz="${(mass_support/4) / 12.0 * (w_support*w_support + w_support*w_support)}"/>
+        </inertial>
+    </link>
+
+    <joint name="gyro_support_joint" type="revolute">
+        <origin xyz="0.0 ${-w_support/2} ${h_support+w_support/2}" rpy="0.0 0.0 0.0"/>
+        <parent link="support_right_link"/>
+        <child link="axel_gyro_link"/>
+        <axis xyz="0.0 1 0.0"/>
+        <limit lower="-${PI/2}" upper="${PI/2}" effort="10.0" velocity="20.0"/>
+    </joint>
+
+    <link name="axel_gyro_link">
+        <visual>
+            <origin xyz="0.0 ${width/2} 0" rpy="${PI/2} 0 0"/>
+            <geometry>
+                <cylinder radius="${w_support/2}" length="${width}"/>
+                <!-- <mesh filename="${mesh_base}" scale="1.0"/> -->
+            </geometry>
+        </visual>
+        <collision>
+            <origin xyz="0.0 ${width/2} 0" rpy="${PI/2} 0 0"/>
+            <geometry>
+                <cylinder radius="${w_support/2}" length="${width}"/>
+                <!-- <box size="${w_support} ${h_support} ${w_support} "/> -->
+                <!-- <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/> -->
+            </geometry>
+        </collision>
+        <inertial>
+            <origin xyz="0.0 ${width/2} 0" rpy="${PI/2} 0 0"/>
+            <mass value="${mass_support/4}"/>
+            <inertia ixx="${(mass_support/4) / 12.0 * (3*w_support/2*w_support/2 + width*width)}" ixy="0.0" ixz="0.0" 
+            iyy="${(mass_support/4) / 12.0 * (3*w_support/2*w_support/2 + width*width)}" iyz="0.0" 
+            izz="${(mass_support/4) / 2.0 * (w_support/2*w_support/2)}"/>
+        </inertial>
+    </link>
+
+
+  <transmission name="tran1">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="gyro_support_joint">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="motor1">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+
+
+    <joint name="gyro_support_1_joint" type="fixed">
+        <origin xyz="0.0 ${width/2} -${w_support/2}" rpy="0.0 0.0 0.0"/>
+        <parent link="axel_gyro_link"/>
+        <child link="support_gyro_link"/>
+        <axis xyz="0.0 0.0 1"/>
+    </joint>
+
+    <link name="support_gyro_link">
+        <visual>
+            <origin xyz="0.0 0 0" rpy="0.0 0.0 0.0"/>
+            <geometry>
+                <cylinder radius="${radius_gyro/4}" length="0.05"/>
+            </geometry>
+        </visual>
+        <collision>
+            <origin xyz="0.0 0 0" rpy="0.0 0.0 0.0"/>
+            <geometry>
+                <cylinder radius="${radius_gyro/4}" length="0.05"/>
+            </geometry>
+        </collision>
+        <inertial>
+            <origin xyz="0.0 0 0" rpy="0.0 0.0 0.0"/>
+            <mass value="${mass_support/4}"/>
+            <inertia ixx="${(mass_support/4) / 12.0 * (3*radius_gyro/4*radius_gyro/4 + 0.05*0.05)}" ixy="0.0" ixz="0.0" 
+                     iyy="${(mass_support/4) / 12.0 * (3*radius_gyro/4*radius_gyro/4 + 0.05*0.05)}" iyz="0.0" 
+                     izz="${(mass_support/4) / 2.0 * (radius_gyro/4*radius_gyro/4)}"/>
+        </inertial>
+    </link>
+
+    <joint name="gyro_joit" type="continuous">
+        <origin xyz="0.0 0.0 -${h_gyro/2+0.05}" rpy="0.0 0.0 0.0"/>
+        <parent link="support_gyro_link"/>
+        <child link="gyro_link"/>
+        <axis xyz="0.0 0.0 1"/>
+        <!-- <limit lower="0.0" upper="0.0" effort="0.0" velocity="0.0"/> -->
+    </joint>
+
+
+    <link name="gyro_link">
+        <visual>
+            <origin xyz="0.0 0 0" rpy="0.0 0.0 0.0"/>
+            <geometry>
+                <cylinder radius="${radius_gyro}" length="${h_gyro}"/>
+            </geometry>
+        </visual>
+        <collision>
+            <origin xyz="0.0 0 0" rpy="0.0 0.0 0.0"/>
+            <geometry>
+                <cylinder radius="${radius_gyro}" length="${h_gyro}"/>
+            </geometry>
+        </collision>
+        <inertial>
+            <origin xyz="0.0 0 0" rpy="0.0 0.0 0.0"/>
+            <mass value="${mass_gyro}"/>
+            <inertia ixx="${mass_gyro / 12.0 * (3*radius_gyro*radius_gyro + h_gyro*h_gyro)}" ixy="0.0" ixz="0.0" 
+                     iyy="${mass_gyro / 12.0 * (3*radius_gyro*radius_gyro + h_gyro*h_gyro)}" iyz="0.0" 
+                     izz="${mass_gyro / 2.0 * (radius_gyro*radius_gyro)}"/>
+        </inertial>
     </link>
 </robot>
        
