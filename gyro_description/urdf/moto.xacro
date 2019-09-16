@@ -4,7 +4,7 @@
     xmlns:xacro="http://ros.org/wiki/xacro">
 
     <!--    Properties    -->
-    <!-- <xacro:property name="namespace" value="moto"/> -->
+    <xacro:property name="namespace" value="moto"/>
     <xacro:property name="PI" value="3.1415926535897931"/>
 
     <!-- Properties of base -->
@@ -33,6 +33,29 @@
     <xacro:include filename="$(find gyro_description)/urdf/moto.gazebo"/> 
     <!-- Including Color material for Gazebo -->
     <xacro:include filename="$(find gyro_description)/urdf/materials.xacro"/>
+    <!-- Component Snippets -->
+    <xacro:include filename="$(find gyro_description)/urdf/component_snippets.xacro"/>
+
+    <!-- ADIS16448 IMU. -->
+    <!-- <xacro:imu_plugin_macro
+      namespace="${namespace}"
+      imu_suffix=""
+      parent_link="base_link"
+      imu_topic="imu"
+      mass_imu_sensor="0.015"
+      gyroscope_noise_density="0.0003394"
+      gyroscope_random_walk="0.000038785"
+      gyroscope_bias_correlation_time="1000.0"
+      gyroscope_turn_on_bias_sigma="0.0087"
+      accelerometer_noise_density="0.004"
+      accelerometer_random_walk="0.006"
+      accelerometer_bias_correlation_time="300.0"
+      accelerometer_turn_on_bias_sigma="0.1960">
+      <inertia ixx="0.00001" ixy="0.0" ixz="0.0" iyy="0.00001" iyz="0.0" izz="0.00001" />
+      <origin xyz="${length/4} 0 ${heigth}" rpy="0 0 0" />
+    </xacro:imu_plugin_macro> -->
+
+
     <link name="base_link">
         <collision>
             <origin xyz="0 0 ${height/2}" rpy="0 0 0"/>
@@ -52,6 +75,16 @@
             <mass value="${mass_base}"/>
             <inertia ixx="${mass_base / 12.0 * (height*height + width*width)}" ixy="0.0" ixz="0.0" iyy="${mass_base / 12.0 * (height*height + length*length)}" iyz="0.0" izz="${mass_base / 12.0 * (length*length + width*width)}"/>
         </inertial>
+    </link>
+
+    <joint name="imu_joint" type="fixed">
+        <origin xyz="${length/4} 0.0 ${height}" rpy="0.0 0.0 0.0"/>
+        <parent link="base_link"/>
+        <child link="imu_link"/>
+        <axis xyz="0.0 0.0 1.0"/>
+    </joint>
+
+    <link name="imu_link">
     </link>
 
     <joint name="front_wheel_joint" type="continuous">
