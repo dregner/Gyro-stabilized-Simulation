@@ -1,29 +1,40 @@
 <?xml version="1.0"?>
 <package>
-  <name>gyro_gazebo</name>
-  <version>0.0.0</version>
-  <description>A gyro stabilized moto gazebo</description>
+    <name>gyro_gazebo</name>
+    <version>0.0.0</version>
+    <description>A gyro stabilized moto gazebo</description>
 
-  <maintainer email="daniel_regner@hotmail.com">Daniel Regner</maintainer>
+    <maintainer email="daniel_regner@hotmail.com">Daniel Regner</maintainer>
 
-  <license>BSD</license>
+    <license>BSD</license>
 
-  <url type="website">https://github.com/dregner</url>
-  <url type="bugtracker">https://github.com/dregner/Gyro-stabilized-Simulation/bugs</url>
-  <url type="repository">https://github.com/dregner/Gyro-stabilized-Simulation/Wiki</url>
+    <url type="website">https://github.com/dregner</url>
+    <url type="bugtracker">https://github.com/dregner/Gyro-stabilized-Simulation/bugs</url>
+    <url type="repository">https://github.com/dregner/Gyro-stabilized-Simulation/Wiki</url>
 
-  <author email="daniel_regner@hotmail.com">Daniel Regner</author>
+    <author email="daniel_regner@hotmail.com">Daniel Regner</author>
 
-  <buildtool_depend>catkin</buildtool_depend>
+    <buildtool_depend>catkin</buildtool_depend>
 
-  <run_depend>gazebo_plugins</run_depend>
-  <run_depend>gazebo_ros</run_depend>
-  <run_depend>gazebo_ros_control</run_depend>
-  <run_depend>gyro_control</run_depend>
-  <run_depend>gyro_description</run_depend>
-  <run_depend>xacro</run_depend>
+    <build_depend>sensor_msgs</build_depend>
+    <build_depend>std_msgs</build_depend>
+    <build_depend>gazebo_msgs</build_depend>
+    <build_depend>gazebo_plugins</build_depend>
+    <build_depend>roscpp</build_depend>
+    <build_depend>rospy</build_depend>
+    <build_depend>gazebo_msgs</build_depend>
+
+    <run_depend>gazebo_plugins</run_depend>
+    <run_depend>gazebo_msgs</run_depend>
+    <run_depend>gazebo_ros</run_depend>
+    <run_depend>gazebo_ros_control</run_depend>
+    <run_depend>gyro_control</run_depend>
+    <run_depend>gyro_description</run_depend>
+    <run_depend>xacro</run_depend>
+    <run_depend>sensor_msgs</run_depend>
+    <run_depend>roscpp</run_depend>
 
 
-  <export>
-  </export>
+    <export>
+    </export>
 </package>

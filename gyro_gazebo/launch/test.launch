@@ -1,7 +1,7 @@
 <launch>
     <arg name="world_name" default="basic"/>
     <arg name="verbose" default="true"/>
-    <arg name="paused" default="true"/>
+    <arg name="paused" default="false"/>
     <arg name="use_sim_time" default="true"/>
     <arg name="gui" default="true"/>
 

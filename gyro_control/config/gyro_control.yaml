@@ -8,7 +8,13 @@ moto:
   gyro_angle:
     type: effort_controllers/JointPositionController
     joint: gyro_support_joint
-    pid: {p: 100.0, i: 0.1, d: 10.0}
+    pid: {p: 10.0, i: 0.01, d: 0.0}
+
+  gyro_velocity:
+    type: effort_controllers/JointVelocityController
+    joint: gyro_joint
+    pid: {p: 25.0, i: 0.05, d: 0.0}
+
   # joint2_position_controller:
   #   type: effort_controllers/JointPositionController
   #   joint: joint2

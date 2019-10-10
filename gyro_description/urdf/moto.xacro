@@ -1,7 +1,6 @@
 <?xml version="1.0"?>
 
-<robot name="moto" 
-    xmlns:xacro="http://ros.org/wiki/xacro">
+<robot name="moto" xmlns:xacro="http://ros.org/wiki/xacro">
 
     <!--    Properties    -->
     <xacro:property name="namespace" value="moto"/>
@@ -19,41 +18,42 @@
     <xacro:property name="mass_wheel" value="0.2"/>
 
     <!-- Properties from gyro support -->
-    <xacro:property name="mass_support" value="0.2"/>
+    <xacro:property name="mass_support" value="1"/>
     <xacro:property name="h_support" value="0.5"/>
     <xacro:property name="w_support" value="0.1"/>
 
     <!-- Propertis of a gyroscope -->
     <xacro:property name="radius_gyro" value=".4"/>
     <xacro:property name="h_gyro" value=".1"/>
-    <xacro:property name="mass_gyro" value="3"/>
+    <xacro:property name="mass_gyro" value="0.5"/>
 
 
     <!-- Include Gazebo association -->
-    <xacro:include filename="$(find gyro_description)/urdf/moto.gazebo"/> 
+    <xacro:include filename="$(find gyro_description)/urdf/moto.gazebo"/>
     <!-- Including Color material for Gazebo -->
     <xacro:include filename="$(find gyro_description)/urdf/materials.xacro"/>
     <!-- Component Snippets -->
     <xacro:include filename="$(find gyro_description)/urdf/component_snippets.xacro"/>
 
     <!-- ADIS16448 IMU. -->
-    <!-- <xacro:imu_plugin_macro
-      namespace="${namespace}"
-      imu_suffix=""
-      parent_link="base_link"
-      imu_topic="imu"
-      mass_imu_sensor="0.015"
-      gyroscope_noise_density="0.0003394"
-      gyroscope_random_walk="0.000038785"
-      gyroscope_bias_correlation_time="1000.0"
-      gyroscope_turn_on_bias_sigma="0.0087"
-      accelerometer_noise_density="0.004"
-      accelerometer_random_walk="0.006"
-      accelerometer_bias_correlation_time="300.0"
-      accelerometer_turn_on_bias_sigma="0.1960">
-      <inertia ixx="0.00001" ixy="0.0" ixz="0.0" iyy="0.00001" iyz="0.0" izz="0.00001" />
-      <origin xyz="${length/4} 0 ${heigth}" rpy="0 0 0" />
-    </xacro:imu_plugin_macro> -->
+    <xacro:imu_plugin_macro
+            namespace="${namespace}"
+            imu_suffix=""
+            parent_link="base_link"
+            imu_topic="imu_base"
+            mass_imu_sensor="0.015"
+            gyroscope_noise_density="0.0003394"
+            gyroscope_random_walk="0.000038785"
+            gyroscope_bias_correlation_time="1000.0"
+            gyroscope_turn_on_bias_sigma="0.0087"
+            accelerometer_noise_density="0.004"
+            accelerometer_random_walk="0.006"
+            accelerometer_bias_correlation_time="300.0"
+            accelerometer_turn_on_bias_sigma="0.1960">
+        <inertia ixx="0.00001" ixy="0.0" ixz="0.0" iyy="0.00001" iyz="0.0" izz="0.00001"/>
+        <origin xyz="${length/4} 0 ${height}" rpy="0 0 0"/>
+    </xacro:imu_plugin_macro>
+
 
 
     <link name="base_link">
@@ -73,7 +73,9 @@
         <inertial>
             <origin xyz="0 0 ${height/2}" rpy="0 0 0"/>
             <mass value="${mass_base}"/>
-            <inertia ixx="${mass_base / 12.0 * (height*height + width*width)}" ixy="0.0" ixz="0.0" iyy="${mass_base / 12.0 * (height*height + length*length)}" iyz="0.0" izz="${mass_base / 12.0 * (length*length + width*width)}"/>
+            <inertia ixx="${mass_base / 12.0 * (height*height + width*width)}" ixy="0.0" ixz="0.0"
+                     iyy="${mass_base / 12.0 * (height*height + length*length)}" iyz="0.0"
+                     izz="${mass_base / 12.0 * (length*length + width*width)}"/>
         </inertial>
     </link>
 
@@ -121,7 +123,9 @@
         <inertial>
             <origin xyz="0.0 0.0 0.0" rpy="${PI/2} 0.0 0.0"/>
             <mass value="${mass_wheel}"/>
-            <inertia ixx="${mass_wheel / 12.0 * (3*radius*radius + h*h)}" ixy="0.0" ixz="0.0" iyy="${mass_wheel / 12.0 * (3*radius*radius + h*h)}" iyz="0.0" izz="${mass_wheel / 2.0 * (radius*radius)}"/>
+            <inertia ixx="${mass_wheel / 12.0 * (3*radius*radius + h*h)}" ixy="0.0" ixz="0.0"
+                     iyy="${mass_wheel / 12.0 * (3*radius*radius + h*h)}" iyz="0.0"
+                     izz="${mass_wheel / 2.0 * (radius*radius)}"/>
         </inertial>
     </link>
 
@@ -143,7 +147,9 @@
         <inertial>
             <origin xyz="0.0 0.0 0.0" rpy="${PI/2} 0.0 0.0"/>
             <mass value="${mass_wheel}"/>
-            <inertia ixx="${mass_wheel / 12.0 * (3*radius*radius + h*h)}" ixy="0.0" ixz="0.0" iyy="${mass_wheel / 12.0 * (3*radius*radius + h*h)}" iyz="0.0" izz="${mass_wheel / 2.0 * (radius*radius)}"/>
+            <inertia ixx="${mass_wheel / 12.0 * (3*radius*radius + h*h)}" ixy="0.0" ixz="0.0"
+                     iyy="${mass_wheel / 12.0 * (3*radius*radius + h*h)}" iyz="0.0"
+                     izz="${mass_wheel / 2.0 * (radius*radius)}"/>
         </inertial>
     </link>
 
@@ -172,7 +178,9 @@
         <inertial>
             <origin xyz="0 0 ${h_support/2}" rpy="0 0 0"/>
             <mass value="${mass_support/4}"/>
-            <inertia ixx="${(mass_support/4) / 12.0 * (h_support*h_support + w_support*w_support)}" ixy="0.0" ixz="0.0" iyy="${(mass_support/4) / 12.0 * (h_support*h_support + w_support*w_support)}" iyz="0.0" izz="${(mass_support/4) / 12.0 * (w_support*w_support + w_support*w_support)}"/>
+            <inertia ixx="${(mass_support/4) / 12.0 * (h_support*h_support + w_support*w_support)}" ixy="0.0" ixz="0.0"
+                     iyy="${(mass_support/4) / 12.0 * (h_support*h_support + w_support*w_support)}" iyz="0.0"
+                     izz="${(mass_support/4) / 12.0 * (w_support*w_support + w_support*w_support)}"/>
         </inertial>
     </link>
 
@@ -201,7 +209,9 @@
         <inertial>
             <origin xyz="0 0 ${h_support/2}" rpy="0 0 0"/>
             <mass value="${mass_support/4}"/>
-            <inertia ixx="${(mass_support/4) / 12.0 * (h_support*h_support + w_support*w_support)}" ixy="0.0" ixz="0.0" iyy="${(mass_support/4) / 12.0 * (h_support*h_support + w_support*w_support)}" iyz="0.0" izz="${(mass_support/4) / 12.0 * (w_support*w_support + w_support*w_support)}"/>
+            <inertia ixx="${(mass_support/4) / 12.0 * (h_support*h_support + w_support*w_support)}" ixy="0.0" ixz="0.0"
+                     iyy="${(mass_support/4) / 12.0 * (h_support*h_support + w_support*w_support)}" iyz="0.0"
+                     izz="${(mass_support/4) / 12.0 * (w_support*w_support + w_support*w_support)}"/>
         </inertial>
     </link>
 
@@ -210,7 +220,7 @@
         <parent link="support_right_link"/>
         <child link="axel_gyro_link"/>
         <axis xyz="0.0 1 0.0"/>
-        <limit lower="-${PI/2}" upper="${PI/2}" effort="10.0" velocity="20.0"/>
+        <limit lower="-${PI/2}" upper="${PI/2}" effort="20.0" velocity="10.0"/>
     </joint>
 
     <link name="axel_gyro_link">
@@ -232,23 +242,34 @@
         <inertial>
             <origin xyz="0.0 ${width/2} 0" rpy="${PI/2} 0 0"/>
             <mass value="${mass_support/4}"/>
-            <inertia ixx="${(mass_support/4) / 12.0 * (3*w_support/2*w_support/2 + width*width)}" ixy="0.0" ixz="0.0" 
-            iyy="${(mass_support/4) / 12.0 * (3*w_support/2*w_support/2 + width*width)}" iyz="0.0" 
-            izz="${(mass_support/4) / 2.0 * (w_support/2*w_support/2)}"/>
+            <inertia ixx="${(mass_support/4) / 12.0 * (3*w_support/2*w_support/2 + width*width)}" ixy="0.0" ixz="0.0"
+                     iyy="${(mass_support/4) / 12.0 * (3*w_support/2*w_support/2 + width*width)}" iyz="0.0"
+                     izz="${(mass_support/4) / 2.0 * (w_support/2*w_support/2)}"/>
         </inertial>
     </link>
 
+    <!-- For each joint I wanna control -->
+    <transmission name="gyro_support_joint_tran">
+        <type>transmission_interface/SimpleTransmission</type>
+        <joint name="gyro_support_joint">
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+        </joint>
+        <actuator name="gyro_support_joint_motor">
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+            <mechanicalReduction>1</mechanicalReduction>
+        </actuator>
+    </transmission>
 
-  <transmission name="tran1">
-    <type>transmission_interface/SimpleTransmission</type>
-    <joint name="gyro_support_joint">
-      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
-    </joint>
-    <actuator name="motor1">
-      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
-      <mechanicalReduction>1</mechanicalReduction>
-    </actuator>
-  </transmission>
+    <transmission name="gyro_joint_tran">
+        <type>transmission_interface/SimpleTransmission</type>
+        <joint name="gyro_joint">
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+        </joint>
+        <actuator name="gyro_joint_motor">
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+            <mechanicalReduction>1</mechanicalReduction>
+        </actuator>
+    </transmission>
 
 
     <joint name="gyro_support_1_joint" type="fixed">
@@ -274,20 +295,21 @@
         <inertial>
             <origin xyz="0.0 0 0" rpy="0.0 0.0 0.0"/>
             <mass value="${mass_support/4}"/>
-            <inertia ixx="${(mass_support/4) / 12.0 * (3*radius_gyro/4*radius_gyro/4 + 0.05*0.05)}" ixy="0.0" ixz="0.0" 
-                     iyy="${(mass_support/4) / 12.0 * (3*radius_gyro/4*radius_gyro/4 + 0.05*0.05)}" iyz="0.0" 
+            <inertia ixx="${(mass_support/4) / 12.0 * (3*radius_gyro/4*radius_gyro/4 + 0.05*0.05)}" ixy="0.0" ixz="0.0"
+                     iyy="${(mass_support/4) / 12.0 * (3*radius_gyro/4*radius_gyro/4 + 0.05*0.05)}" iyz="0.0"
                      izz="${(mass_support/4) / 2.0 * (radius_gyro/4*radius_gyro/4)}"/>
         </inertial>
     </link>
 
-    <joint name="gyro_joit" type="continuous">
+    <joint name="gyro_joint" type="continuous">
         <origin xyz="0.0 0.0 -${h_gyro/2+0.05}" rpy="0.0 0.0 0.0"/>
         <parent link="support_gyro_link"/>
         <child link="gyro_link"/>
         <axis xyz="0.0 0.0 1"/>
-        <!-- <limit lower="0.0" upper="0.0" effort="0.0" velocity="0.0"/> -->
+        <limit effort="50.0" velocity="200.0"/>
+        <safety_controller k_velocity="100.0"/>
+        <dynamics damping="0.1" friction="0.01"/>
     </joint>
-
 
     <link name="gyro_link">
         <visual>
@@ -305,8 +327,8 @@
         <inertial>
             <origin xyz="0.0 0 0" rpy="0.0 0.0 0.0"/>
             <mass value="${mass_gyro}"/>
-            <inertia ixx="${mass_gyro / 12.0 * (3*radius_gyro*radius_gyro + h_gyro*h_gyro)}" ixy="0.0" ixz="0.0" 
-                     iyy="${mass_gyro / 12.0 * (3*radius_gyro*radius_gyro + h_gyro*h_gyro)}" iyz="0.0" 
+            <inertia ixx="${mass_gyro / 12.0 * (3*radius_gyro*radius_gyro + h_gyro*h_gyro)}" ixy="0.0" ixz="0.0"
+                     iyy="${mass_gyro / 12.0 * (3*radius_gyro*radius_gyro + h_gyro*h_gyro)}" iyz="0.0"
                      izz="${mass_gyro / 2.0 * (radius_gyro*radius_gyro)}"/>
         </inertial>
     </link>

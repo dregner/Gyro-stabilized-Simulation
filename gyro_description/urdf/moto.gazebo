@@ -2,7 +2,7 @@
 <robot>
 
   <!-- ros_control plugin -->
-  <gazebo>
+   <gazebo>
     <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
       <robotNamespace>/moto</robotNamespace>
       <robotSimType>gazebo_ros_control/DefaultRobotHWSim</robotSimType>
@@ -10,7 +10,9 @@
     </plugin>
   </gazebo>
 
-  <gazebo reference="imu_link">
+
+
+  <!-- <gazebo reference="imu_link">
     <gravity>true</gravity>
     <sensor name="imu_sensor" type="imu">
       <always_on>true</always_on>
@@ -28,7 +30,7 @@
       </plugin>
       <pose>0 0 0 0 0 0</pose>
     </sensor>
-  </gazebo>
+  </gazebo> -->
 
   <!-- Base -->
   <gazebo reference="base_link">
