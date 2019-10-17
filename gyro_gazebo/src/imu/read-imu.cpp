@@ -8,7 +8,8 @@
 #include <iostream>
 #include <fstream>
 #include <std_msgs/Float64.h>
-#include <ignition/math2/ignition/math/Quaternion.hh>
+#include <ignition/math2/ignition/math/Pose3.hh>
+
 
 
 double q_x, q_y, q_z, q_w, roll, pitch, yaw;
