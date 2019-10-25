@@ -38,17 +38,15 @@ include_directories(include ${catkin_INCLUDE_DIRS})
 
 add_executable(read-imu src/imu/read-imu.cpp)
 target_link_libraries(read-imu ${catkin_LIBRARIES})
-#add_dependencies()
+#add_dependencies(read-imu)
 
+add_executable(start_gyro src/start_gyro.cpp)
+target_link_libraries(start_gyro ${catkin_LIBRARIES})
+#add_dependencies(start_gyro)
 
-#if (${gazebo_VERSION_MAJOR} LESS 6)
-#    # These two
-#    include(FindBoost)
-#    find_package(Boost ${MIN_BOOST_VERSION} REQUIRED system filesystem regex)
-#    target_link_libraries(vel ${GAZEBO_LIBRARIES} ${Boost_LIBRARIES})
-#else()
-#    target_link_libraries(vel ${GAZEBO_LIBRARIES})
-#endif()
+add_executable(control_state src/control_state.cpp)
+target_link_libraries(control_state ${catkin_LIBRARIES})
+
 
 foreach(dir launch models resource worlds)
     install(DIRECTORY ${dir}/
