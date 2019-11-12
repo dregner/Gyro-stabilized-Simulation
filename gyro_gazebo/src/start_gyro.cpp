@@ -28,11 +28,9 @@ int main(int argc, char **argv) {
         int num;
 
         // Input the integer
-        std::cout << "Enter the integer: ";
+        std::cout << "Publish speed value: ";
         std::cin >> num;
 
-        // Display the integer
-        std::cout << "Entered integer is: " << num << "\n";
 
         poll_rate.sleep();
         std_msgs::Float64 msg_vel;

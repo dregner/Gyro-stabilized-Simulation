@@ -12,7 +12,7 @@
 
 
 
-double q_x, q_y, q_z, q_w, roll, pitch, yaw;
+double roll, pitch, yaw, roll_dot, pitch_dot, yaw_dot;
 double value;
 double RadToDeg = 180 / M_PI;
 
@@ -34,8 +34,14 @@ void read_imu(const sensor_msgs::Imu::ConstPtr &msg) {
     yaw = rpy.Yaw();
     yaw *= RadToDeg;
 
-    ROS_INFO("Seq: [%d]", msg->header.seq);
+
+    roll_dot = msg->angular_velocity.x;
+    pitch_dot = msg->angular_velocity.y;
+    yaw_dot = msg->angular_velocity.z;
+
+//    ROS_INFO("Seq: [%d]", msg->header.seq);
     ROS_INFO("Orientation -> r: [%f], p: [%f], y: [%f]", roll, pitch, yaw);
+    ROS_INFO("Ang Vel -> r: [%f], p: [%f], y: [%f]", roll_dot, pitch_dot, yaw_dot);
 }
 
 

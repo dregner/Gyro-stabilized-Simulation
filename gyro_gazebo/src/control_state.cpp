@@ -9,9 +9,9 @@
 
 double roll, pitch, yaw, roll_dot, pitch_dot, yaw_dot;
 double x1, x2, x3, theta, atuacao;
-const float K1 = -3.4727;
-const float K2 = -0.9386;
-const float K3 = -0.9930;
+const float K1 = -4.2762;
+const float K2 = -1.1504;
+const float K3 = -1.5896;
 double DegToRad = M_PI / 180;
 double RadToDeg = 180 / M_PI;
 int countt; int Ts = 5;
@@ -27,8 +27,8 @@ private:
     ignition::math::Quaterniond rpy;
 public:
     Control_SS() {
-        sub_imu = control.subscribe("/imu_base", 100, &Control_SS::callback, this);
-        servo = control.advertise<std_msgs::Float64>("/moto/gyro_angle/command", 10);
+        sub_imu = control.subscribe("/imu_base", 1000, &Control_SS::callback, this);
+        servo = control.advertise<std_msgs::Float64>("/moto/gyro_angle/command", 1000);
     }
 
     ~Control_SS() {}
@@ -42,8 +42,9 @@ public:
         ignition::math::Quaterniond rpy;
 
         rpy.Set(imu->orientation.w, imu->orientation.x, imu->orientation.y, imu->orientation.z);
-        ros::Rate loop_rate(1000);
-        if (coutt > Ts) {
+//        ros::Rate loop_rate(1000);
+//        if (countt > Ts) {
+//            countt = 0;
             roll = rpy.Roll();
             roll *= RadToDeg;
 
@@ -57,13 +58,16 @@ public:
             pitch_dot = imu->angular_velocity.y;
             yaw_dot = imu->angular_velocity.z;
 
-            u = -K1 * roll - K2 * theta - K3 * roll_dot;
-            theta = fmin(0.7, fmax(-0.7, theta));
-            msg_servo.data = atuacao;
-            servo.publish(msg_servo);
-        }
+            theta += (-K1 * roll - K2 * theta - K3 * roll_dot);
 
-        loop_rate.sleep();
+//            theta += (u * dt) / 1000.0; //  Converter dt para segundos
+            theta = std::min(0.9, std::max(-0.9, theta));
+            msg_servo.data = theta;
+//            std::cout << theta << "\n";
+            servo.publish(msg_servo);
+//        }
+
+//        loop_rate.sleep();
         countt++;
 
 
@@ -75,6 +79,10 @@ public:
 int main(int argc, char **argv) {
 
     ros::init(argc, argv, "control_state");
-    ros::NodeHandle control;
+    Control_SS controlSs;
+
+    while(ros::ok()){
+        ros::spinOnce();
+    }
     return 0;
 }

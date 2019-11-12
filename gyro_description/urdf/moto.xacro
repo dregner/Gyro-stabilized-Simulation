@@ -25,7 +25,7 @@
     <!-- Propertis of a gyroscope -->
     <xacro:property name="radius_gyro" value=".4"/>
     <xacro:property name="h_gyro" value=".1"/>
-    <xacro:property name="mass_gyro" value="1"/>
+    <xacro:property name="mass_gyro" value="3"/>
 
 
     <!-- Include Gazebo association -->
@@ -308,9 +308,9 @@
         <parent link="support_gyro_link"/>
         <child link="gyro_link"/>
         <axis xyz="0.0 0.0 1"/>
-        <limit effort="50.0" velocity="200.0"/>
+        <limit effort="100.0" velocity="500.0"/>
         <safety_controller k_velocity="100.0"/>
-        <dynamics damping="0.1" friction="0.01"/>
+        <dynamics damping="0.1" friction="0.0"/>
     </joint>
 
     <link name="gyro_link">
