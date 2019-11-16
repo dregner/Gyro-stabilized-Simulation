@@ -8,13 +8,17 @@
 #include <message_filters/sync_policies/exact_time.h>
 
 double roll, pitch, yaw, roll_dot, pitch_dot, yaw_dot;
-double x1, x2, x3, theta, atuacao;
+double x1=18;
+double x2 = 0;
+double x3 = 0, theta;
+double xe1, xe2, xe3;
 const float K1 = -4.2762;
 const float K2 = -1.1504;
 const float K3 = -1.5896;
 double DegToRad = M_PI / 180;
 double RadToDeg = 180 / M_PI;
-int countt; int Ts = 5;
+int countt;
+int Ts = 5;
 
 class Control_SS {
 private:
@@ -25,6 +29,7 @@ private:
     std_msgs::Float64 msg_servo;
 
     ignition::math::Quaterniond rpy;
+
 public:
     Control_SS() {
         sub_imu = control.subscribe("/imu_base", 1000, &Control_SS::callback, this);
@@ -45,17 +50,26 @@ public:
 //        ros::Rate loop_rate(1000);
 //        if (countt > Ts) {
 //            countt = 0;
-            roll = rpy.Roll();
-            roll *= RadToDeg;
+        roll = rpy.Roll();
 
-            roll_dot = imu->angular_velocity.x;
+        roll_dot = imu->angular_velocity.x;
 
-            theta += (-K1 * roll - K2 * theta - K3 * roll_dot);
 
-            theta = std::min(0.9, std::max(-0.9, theta));
-            msg_servo.data = theta;
-            servo.publish(msg_servo);
+        //DISCRETO L por LQR q=1e-4 r = 1; C = [1 0 0; 0 1 0]  (Ad-Bd*Kd-Ld*C) + Ld*y Ld = lqr 0.1 Kd = 0.7 ts 5
+        xe1 = (0.9607 * x1 - -0.0001 * x2 + 0.0048 * x3) + 0.0389 * roll;
+        xe2 = (0.0214 * x1 + 0.9958 * x2 + 0.0079 * x3) + 0.01 * theta;
+        xe3 = (-0.2861 * x1 - 0.0578 * x2 + 0.9203 * x3) + 0.1416 * roll;
+
+        theta += (-K1 * x1 - K2 * x2 - K3 * x3);
+
+
+        theta = std::min(0.9, std::max(-0.9, theta));
+        msg_servo.data = theta;
+        servo.publish(msg_servo);
 //        }
+        x1 = xe1;
+        x2 = xe2;
+        x3 = xe3;
 
 //        loop_rate.sleep();
         countt++;
@@ -71,7 +85,7 @@ int main(int argc, char **argv) {
     ros::init(argc, argv, "control_state");
     Control_SS controlSs;
 
-    while(ros::ok()){
+    while (ros::ok()) {
         ros::spinOnce();
     }
     return 0;

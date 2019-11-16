@@ -47,6 +47,9 @@ target_link_libraries(start_gyro ${catkin_LIBRARIES})
 add_executable(control_state src/control_state.cpp)
 target_link_libraries(control_state ${catkin_LIBRARIES})
 
+add_executable(observer_state src/observer-control_state.cpp)
+target_link_libraries(observer_state ${catkin_LIBRARIES})
+
 
 foreach(dir launch models resource worlds)
     install(DIRECTORY ${dir}/
