@@ -50,6 +50,8 @@ target_link_libraries(control_state ${catkin_LIBRARIES})
 add_executable(observer_state src/observer-control_state.cpp)
 target_link_libraries(observer_state ${catkin_LIBRARIES})
 
+add_executable(read_states src/read_states.cpp)
+target_link_libraries(read_states ${catkin_LIBRARIES})
 
 foreach(dir launch models resource worlds)
     install(DIRECTORY ${dir}/
