@@ -130,8 +130,7 @@ void kalman_code(){
     S = (C*P)*trans(C)+v;
 
     K = (P*Ct)*inv(S);
-    xap = xa+K*(y-C*xa)
-            ;
+    xap = xa+K*(y-C*xa);
     mat Pp = (I - K*C)*P;
 
     mat xp(3,1,float) = A*xap+B*u;
