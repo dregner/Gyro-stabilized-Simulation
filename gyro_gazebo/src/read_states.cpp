@@ -32,6 +32,11 @@ static std::ofstream images_file;
 
 static ignition::math::Quaterniond rpy;
 
+void ssave(){
+
+
+}
+
 void callback(const ImuConstPtr &imu,
               const JointStateConstPtr &joint) {
 
@@ -44,16 +49,23 @@ void callback(const ImuConstPtr &imu,
 
     roll_dot = imu->angular_velocity.x;
 
-//    name = joint->name[0];
+
     theta = joint->position[1];
     theta *= RadToDeg;
     theta_dot = joint->velocity[1];
 
-//    ROS_INFO("IMU pos:[%f] vel:[%f]", roll, roll_dot);
-//    ROS_INFO("JOINT pos:[%f] vel>[%f]", theta, theta_dot);
+//    if (images_file.is_open()) {
+//        images_file << tout << "\t" << roll << "\t" << theta << "\t" << roll_dot << "\t" << theta_dot << "\n";
+//    }
+
+
+    tout++;
+    ROS_INFO("MOTO pos:[%f] vel:[%f]", roll, roll_dot);
+    ROS_INFO("GYRO pos:[%f] vel:[%f]", theta, theta_dot);
 
 
 }
+
 
 
 int main(int argc, char **argv) {
@@ -61,16 +73,16 @@ int main(int argc, char **argv) {
     ros::init(argc, argv, "read_states");
     ros::NodeHandle nh;
 
-    message_filters::Subscriber<Imu> imu_sub(nh, "/imu_base", 1);
-    message_filters::Subscriber<JointState> joint_sub(nh, "/moto/joint_states", 1);
+    message_filters::Subscriber<Imu> imu_sub(nh, "/imu_base", 100);
+    message_filters::Subscriber<JointState> joint_sub(nh, "/moto/joint_states", 100);
 
-//    images_file.open("odometria_imagens.txt");
+//    images_file.open("states.txt");
 
 
 //    typedef sync_policies::ExactTime<Imu, JointState> MySyncPolicy;
     /// ExactTime takes a queue size as its constructor argument, hence MySyncPolicy(10)
 //    TimeSynchronizer<MySyncPolicy> sync(MySyncPolicy(1000), imu_sub, joint_sub);
-    TimeSynchronizer<Imu, JointState> sync(imu_sub, joint_sub,1);
+    TimeSynchronizer<Imu, JointState> sync(imu_sub, joint_sub,10000);
     sync.registerCallback(boost::bind(&callback, _1, _2));
 
 

@@ -6,6 +6,30 @@
 #include <message_filters/subscriber.h>
 #include <message_filters/synchronizer.h>
 #include <message_filters/sync_policies/exact_time.h>
+#include <armadillo>
+#include <iostream>
+
+// ======== CONFIGURAÇÕES FILTROD E KALMAN =========
+// Tempo de amostragem 10 ms
+//----------Jacobiano F e G------------
+mat A(3,3, float) = 1.0053 << 0 << 0.01 << endr << 0 << 1 << 0 << endr << 1.0652<< 0 << 1.053 << endr;
+mat B(3,1, float) = -0.0039 << endr << 0.01<< endr << -0.7896 << endr;
+
+//--------SAIDAS h(x)--------
+// DUAS SAIDAS POS MOTO E GIRO
+mat jac_C(2,3, float) = 1 << 0 << 0 << endr << 0 << 1 << 0 << endr;
+
+//--------Ruidos----------
+// Ruido de entrada
+mat ruido_w(3,3,float) = {{10^-8,0,0},{0,10^-11,0},{0,0,10^-9}};
+
+//Ruido duas saidas
+// Duas saidas
+mat ruido_v(2,2,float) = {{10^-4,0},{0,10^-4}};
+mat S(2,2, fill::eye);
+mat P(3,3,fill::eye);
+mat I(3,3,fill::eye);
+
 
 double roll, pitch, yaw, roll_dot, pitch_dot, yaw_dot;
 double x1=18;
@@ -95,4 +119,31 @@ int main(int argc, char **argv) {
         ros::spinOnce();
     }
     return 0;
+}
+
+void kalman_code(){
+
+    mat xa(3,1,float) = x1 << endr << x2 << endr << x3 << endr;
+
+    mat y(2,1,float) = y1 << endr << y2 endr;
+
+    S = (C*P)*trans(C)+v;
+
+    K = (P*Ct)*inv(S);
+    xap = xa+K*(y-C*xa)
+            ;
+    mat Pp = (I - K*C)*P;
+
+    mat xp(3,1,float) = A*xap+B*u;
+    P = ((A*Pp)*trans(A))+w;
+
+    x1 = xp(1,1);
+    x2 = xp(2,1);
+    x3 = xp(3,1);
+
+}
+
+float mapfloat(float x, float in_min, float in_max, float out_min, float out_max)
+{
+    return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
 }

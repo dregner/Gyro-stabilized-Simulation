@@ -14,7 +14,7 @@
 
     <!-- Properties of wheels    -->
     <xacro:property name="radius" value="0.3"/>
-    <xacro:property name="h" value=".01"/>
+    <xacro:property name="h" value=".05"/>
     <xacro:property name="mass_wheel" value="0.2"/>
 
     <!-- Properties from gyro support -->
@@ -53,7 +53,6 @@
         <inertia ixx="0.00001" ixy="0.0" ixz="0.0" iyy="0.00001" iyz="0.0" izz="0.00001"/>
         <origin xyz="${length/4} 0 ${height}" rpy="0 0 0"/>
     </xacro:imu_plugin_macro>
-
 
 
     <link name="base_link">
@@ -109,16 +108,16 @@
         <visual>
             <origin xyz="0.0 0.0 0.0" rpy="${PI/2} 0.0 0.0"/>
             <geometry>
-<!--                <sphere radius="${radius}"/>-->
-                <cylinder radius="${radius}" length="${h}"/>
+                <!--  <cylinder radius="${radius}" length="${h}"/>-->
                 <!-- <mesh filename="${mesh_base}" scale="1.0"/> -->
+                <sphere radius="${radius}"/>
             </geometry>
         </visual>
         <collision>
             <origin xyz="0.0 0.0 0.0" rpy="${PI/2} 0.0 0.0"/>
             <geometry>
-<!--                <sphere radius="${radius}"/>-->
-                <cylinder radius="${radius}" length="${h}"/>
+                <!-- <cylinder radius="${radius}" length="${h}"/>-->
+                <sphere radius="${radius}"/>
                 <!-- <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/> -->
             </geometry>
         </collision>
@@ -135,15 +134,17 @@
         <visual>
             <origin xyz="0.0 0.0 0.0" rpy="${PI/2} 0.0 0.0"/>
             <geometry>
-                <cylinder radius="${radius}" length="${h}"/>
+                <!-- <cylinder radius="${radius}" length="${h}"/>-->
                 <!-- <mesh filename="${mesh_base}" scale="1.0"/> -->
+                <sphere radius="${radius}"/>
             </geometry>
         </visual>
         <collision>
             <origin xyz="0.0 0.0 0.0" rpy="${PI/2} 0.0 0.0"/>
             <geometry>
-                <cylinder radius="${radius}" length="${h}"/>
+                <!-- <cylinder radius="${radius}" length="${h}"/>-->
                 <!-- <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/> -->
+                <sphere radius="${radius}"/>
             </geometry>
         </collision>
         <inertial>

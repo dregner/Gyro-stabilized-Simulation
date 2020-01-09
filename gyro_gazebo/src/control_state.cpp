@@ -15,7 +15,7 @@ const float K3 = -1.5896;
 double DegToRad = M_PI / 180;
 double RadToDeg = 180 / M_PI;
 int countt; int Ts = 5;
-
+    
 class Control_SS {
 private:
     ros::NodeHandle control;
@@ -46,7 +46,7 @@ public:
 //        if (countt > Ts) {
 //            countt = 0;
             roll = rpy.Roll();
-            roll *= RadToDeg;
+//            roll *= RadToDeg;
 
             roll_dot = imu->angular_velocity.x;
 
