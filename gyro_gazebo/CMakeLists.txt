@@ -53,6 +53,10 @@ target_link_libraries(observer_state ${catkin_LIBRARIES})
 add_executable(read_states src/read_states.cpp)
 target_link_libraries(read_states ${catkin_LIBRARIES})
 
+add_executable(read_kalman src/kalman_observer.cpp)
+target_link_libraries(read_kalman ${catkin_LIBRARIES})
+
+
 foreach(dir launch models resource worlds)
     install(DIRECTORY ${dir}/
             DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}/${dir})

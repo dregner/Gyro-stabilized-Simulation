@@ -38,7 +38,7 @@ void ssave(){
 }
 
 void callback(const ImuConstPtr &imu,
-              const JointStateConstPtr &joint) {
+                  const JointStateConstPtr &joint) {
 
     ignition::math::Quaterniond rpy;
 
