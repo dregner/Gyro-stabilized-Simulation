@@ -9,10 +9,9 @@
 #include <message_filters/synchronizer.h>
 #include <message_filters/sync_policies/exact_time.h>
 
-#include <armadillo>
+#include <string>
+#include <fstream>
 #include <iostream>
-
-using namespace arma;
 
 /// ======== CONFIGURAÇÕES FILTROD E KALMAN =========
 /// Tempo de amostragem 5 ms
@@ -65,7 +64,7 @@ double I[3][3] = {{1, 0, 0},
 
 
 double roll, pitch, yaw, roll_dot, pitch_dot, yaw_dot;
-double x1 = 18;
+double x1 = 0;
 double x2 = 0;
 double x3 = 0;
 double theta;
@@ -76,15 +75,17 @@ const double K2 = -1.1504;
 const double K3 = -1.5896;
 double DegToRad = M_PI / 180;
 double RadToDeg = 180 / M_PI;
-int countt;
+int tout;
+
+
 int Ts = 5;
 
 class Read_Kalman {
 private:
+    std::ofstream obs;
     ros::NodeHandle n_kalman;
-
-    ros::Subscriber sub_imu;
-    ros::Subscriber sub_theta;
+    ros::Subscriber sub_imu1;
+    ros::Subscriber sub_theta1;
     std_msgs::Float64 msg_servo;
 
     ignition::math::Quaterniond rpy;
@@ -220,7 +221,7 @@ private:
     void sum_33_33(double a[3][3], double b[3][3], double result[3][3]) {
         for (int i = 0; i < 3; ++i) {
             for (int j = 0; j < 3; ++j) {
-                result[i][j] = a[i][j] - b[i][j];
+                result[i][j] = a[i][j] + b[i][j];
             }
         }
     }
@@ -229,14 +230,6 @@ private:
         for (int i = 0; i < 3; ++i) {
             for (int j = 0; j < 1; ++j) {
                 result[i][j] = a[i][j] + b[i][j];
-            }
-        }
-    }
-
-    void sum_21_21(double a[2][1], double b[2][1], double result[2][1]) {
-        for (int i = 0; i < 2; ++i) {
-            for (int j = 0; j < 1; ++j) {
-                result[i][j] = a[i][j] - b[i][j];
             }
         }
     }
@@ -261,14 +254,16 @@ private:
 
 public:
     Read_Kalman() {
-        sub_theta = n_kalman.subscribe("/moto/joint_state", 10, &Read_Kalman::read_theta, this);
-        sub_imu = n_kalman.subscribe("/imu_base", 10, &Read_Kalman::callback, this);
+        sub_theta1 = n_kalman.subscribe("/moto/joint_state", 10, &Read_Kalman::read_theta, this);
+        sub_imu1 = n_kalman.subscribe("/imu_base", 10, &Read_Kalman::callback, this);
+        obs.open("observer_states.txt");
     }
 
     ~Read_Kalman() {}
 
     void read_theta(const sensor_msgs::JointState::ConstPtr &joint) {
         theta = joint->position[1];
+        y_2 = theta;
     }
 
     void callback(const sensor_msgs::Imu::ConstPtr &imu) {
@@ -282,9 +277,13 @@ public:
         y_1 = rpy.Roll();
 //      x3 = imu->angular_velocity.x;
         /// OBSERVA
-        kalman();
+//        kalman();
+        observer();
 
-
+        if (obs.is_open()) {
+            obs << tout << "\t" << x1 << "\t" << x2 << "\t" << x3 << "\n";
+        }
+        tout++;
         ROS_INFO("x1 [%f], x2: [%f], x3: [%f]", x1, x2, x3);
     }
 
@@ -294,6 +293,10 @@ public:
         xe1 = (0.7232 * x1 - 0.0001 * x2 + 0.0048 * x3) + 0.2764 * y_1;
         xe2 = (0.0214 * x1 + 0.7356 * x2 + 0.0079 * x3) + 0.2702 * y_2;
         xe3 = (-0.5008 * x1 - 0.0578 * x2 + 0.9203 * x3) + 0.3563 * y_1;
+
+        x1 = xe1;
+        x2 = xe2;
+        x3 = xe3;
 
 
     }
@@ -307,20 +310,19 @@ public:
         double y[2][1] = {{y_1},
                           {y_2}};
         /// S = (jac_C * P) * trans(jac_C) + noise_exit;
-        double s1[2][3];
-        multiply_23_33(jac_C, P, s1);
         double jac_Ct[3][2];
         transpose_23(jac_C, jac_Ct);
-        double S[2][2];
-        multiply_23_32(s1, jac_Ct, S);
-        double S_result[2][2];
-        sum_22_22(S, noise_exit, S_result);
+        double s1[2][3];
+        multiply_23_33(jac_C, P, s1);
+        double S1[2][2];
+        multiply_23_32(s1, jac_Ct, S1);
+        sum_22_22(S1, noise_exit, S);
 
         /// K = (P * trans(jac_C)) * inv(S);
         double k1[3][2];
         multiply_33_32(P, jac_Ct, k1);
         double K[3][2];
-        divMatrix(k1, S_result, K);
+        divMatrix(k1, S, K);
 
         /// mat xap = xa + K * (y - jac_C * xa);
         double xap1[2][1];
@@ -369,7 +371,7 @@ public:
 
 int main(int argc, char **argv) {
 
-    ros::init(argc, argv, "control_state");
+    ros::init(argc, argv, "kalman_observer");
     Read_Kalman Kalman;
 
     while (ros::ok()) {

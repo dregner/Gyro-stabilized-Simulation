@@ -1,4 +1,4 @@
-prefix=/home/daniel/catkin_ws/src/Gyro-stabilized-Simulation/gyro_gazebo/cmake-build-debug/devel
+prefix=/home/vant3d/catkin_ws/src/Gyro-stabilized-Simulation/gyro_gazebo/cmake-build-debug/devel
 
 Name: gyro_gazebo
 Description: Description of gyro_gazebo

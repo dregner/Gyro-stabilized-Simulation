@@ -8,11 +8,10 @@
 #include <message_filters/sync_policies/exact_time.h>
 
 double roll, pitch, yaw, roll_dot, pitch_dot, yaw_dot;
-double x1, x2, x3, theta, atuacao;
+double x1, x2, x3, theta;
 const float K1 = -4.2762;
 const float K2 = -1.1504;
 const float K3 = -1.5896;
-double DegToRad = M_PI / 180;
 double RadToDeg = 180 / M_PI;
 int countt; int Ts = 5;
     
@@ -32,10 +31,6 @@ public:
     }
 
     ~Control_SS() {}
-
-    float mapfloat(float x, float in_min, float in_max, float out_min, float out_max) {
-        return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
-    }
 
     void callback(const sensor_msgs::Imu::ConstPtr &imu) {
 

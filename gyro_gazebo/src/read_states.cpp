@@ -28,14 +28,10 @@ static int tout = 0;
 std::string decimal(int r);
 
 
-static std::ofstream images_file;
+static std::ofstream states;
+
 
 static ignition::math::Quaterniond rpy;
-
-void ssave(){
-
-
-}
 
 void callback(const ImuConstPtr &imu,
                   const JointStateConstPtr &joint) {
@@ -45,23 +41,24 @@ void callback(const ImuConstPtr &imu,
     rpy.Set(imu->orientation.w, imu->orientation.x, imu->orientation.y, imu->orientation.z);
 
     roll = rpy.Roll();
-    roll *= RadToDeg;
+//    roll *= RadToDeg;
 
     roll_dot = imu->angular_velocity.x;
 
 
     theta = joint->position[1];
-    theta *= RadToDeg;
+//    theta *= RadToDeg;
     theta_dot = joint->velocity[1];
 
-//    if (images_file.is_open()) {
-//        images_file << tout << "\t" << roll << "\t" << theta << "\t" << roll_dot << "\t" << theta_dot << "\n";
-//    }
+    if (states.is_open()) {
+        states << tout << "\t" << roll << "\t" << theta << "\t" << roll_dot << "\n";
+    }
 
 
     tout++;
-    ROS_INFO("MOTO pos:[%f] vel:[%f]", roll, roll_dot);
-    ROS_INFO("GYRO pos:[%f] vel:[%f]", theta, theta_dot);
+//    ROS_INFO("MOTO pos:[%f] vel:[%f]", roll, roll_dot);
+//    ROS_INFO("GYRO pos:[%f] vel:[%f]", theta, theta_dot);
+    ROS_INFO("x1 [%f], x2: [%f], x3: [%f]", roll, theta, roll_dot);
 
 
 }
@@ -72,9 +69,9 @@ int main(int argc, char **argv) {
 
     ros::init(argc, argv, "read_states");
     ros::NodeHandle nh;
-
-    message_filters::Subscriber<Imu> imu_sub(nh, "/imu_base", 100);
-    message_filters::Subscriber<JointState> joint_sub(nh, "/moto/joint_states", 100);
+    states.open("real_states.txt");
+    message_filters::Subscriber<Imu> imu_sub(nh, "/imu_base", 1000);
+    message_filters::Subscriber<JointState> joint_sub(nh, "/moto/joint_states", 1000);
 
 //    images_file.open("states.txt");
 
@@ -82,7 +79,7 @@ int main(int argc, char **argv) {
 //    typedef sync_policies::ExactTime<Imu, JointState> MySyncPolicy;
     /// ExactTime takes a queue size as its constructor argument, hence MySyncPolicy(10)
 //    TimeSynchronizer<MySyncPolicy> sync(MySyncPolicy(1000), imu_sub, joint_sub);
-    TimeSynchronizer<Imu, JointState> sync(imu_sub, joint_sub,10000);
+    TimeSynchronizer<Imu, JointState> sync(imu_sub, joint_sub,100000);
     sync.registerCallback(boost::bind(&callback, _1, _2));
 
 

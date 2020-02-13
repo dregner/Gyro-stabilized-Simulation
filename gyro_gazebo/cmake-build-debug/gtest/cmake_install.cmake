@@ -39,7 +39,7 @@ endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for each subdirectory.
-  include("/home/daniel/catkin_ws/src/Gyro-stabilized-Simulation/gyro_gazebo/cmake-build-debug/gtest/gtest/cmake_install.cmake")
+  include("/home/vant3d/catkin_ws/src/Gyro-stabilized-Simulation/gyro_gazebo/cmake-build-debug/gtest/gtest/cmake_install.cmake")
 
 endif()
 
