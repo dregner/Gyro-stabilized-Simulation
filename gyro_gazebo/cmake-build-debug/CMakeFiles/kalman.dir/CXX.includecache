@@ -32,7 +32,9 @@ fstream
 iostream
 -
 matrix.h
--
+/home/vant3d/catkin_ws/src/Gyro-stabilized-Simulation/gyro_gazebo/src/matrix.h
+
+/home/vant3d/catkin_ws/src/Gyro-stabilized-Simulation/gyro_gazebo/src/matrix.h
 
 /opt/ros/kinetic/include/geometry_msgs/Quaternion.h
 string

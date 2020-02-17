@@ -41,6 +41,7 @@ private:
     std_msgs::Float64 msg_servo;
 
     ignition::math::Quaterniond rpy;
+    Matrix matrix;
 
 
     /// Global variables for Kalman
@@ -62,8 +63,9 @@ private:
 
 /// ------- Variaveis Auxiliares ---------
     double jac_Ct[3][2] = {{0,0},{0,0},{0,0}};
-    double s1[2][3]= {{0,0,0},{0,0,0}};;
-    double S1[2][2]= {{0,0},{0,0}};
+    double s1[2][3] = {{0,0,0},{0,0,0}};
+    double S1[2][2] = {{0,0},{0,0}};
+    double Si[2][2] = {{0,0},{0,0}};
 
 /// K = (P * trans(jac_C)) * inv(S);
     double k1[3][2] = {{0,0},{0,0},{0,0}};
@@ -88,8 +90,7 @@ private:
     double P1[3][3] = {{0,0,0},{0,0,0},{0,0,0}};
     double At[3][3] = {{0,0,0},{0,0,0},{0,0,0}};
     double P2[3][3] = {{0,0,0},{0,0,0},{0,0,0}};
-    double S[2][2] = {{1, 0},
-                      {0, 1}};
+    double S[2][2] = {{1, 0},{0, 1}};
     double P[3][3] = {{1.0, 0, 0},{0, 1.0, 0},{0, 0, 1.0}};
     double I[3][3] = {{1, 0, 0},{0, 1, 0},{0, 0, 1}};
 
@@ -154,36 +155,37 @@ public:
                           {y_2}};
 
         /// S = (jac_C * P) * trans(jac_C) + noise_exit;
-        transpose_23(jac_C, jac_Ct);
-        multiply_23_33(jac_C, P, s1);
-        multiply_23_32(s1, jac_Ct, S1);
-        sum_22_22(S1, noise_exit, S);
+        matrix.transpose_23(jac_C, jac_Ct);
+        matrix.multiply_23_33(jac_C, P, s1);
+        matrix.multiply_23_32(s1, jac_Ct, S1);
+        matrix.sum_22_22(S1, noise_exit, S);
 
         /// K = (P * trans(jac_C)) * inv(S);
-        multiply_33_32(P, jac_Ct, k1);
-        divMatrix(k1, S, K);
+        matrix.multiply_33_32(P, jac_Ct, k1);
+        matrix.inverse(S, Si);
+        matrix.multiply_32_22(k1, Si, K);
 
         /// mat xap = xa + K * (y - jac_C * xa);
-        multiply_23_31(jac_C, xa, xap1);
-        sub_21_21(y, xap1, xap2);
-        multiply_32_21(K, xap2, xap3);
-        sum_31_31(xa, xap3, xap);
+        matrix.multiply_23_31(jac_C, xa, xap1);
+        matrix.sub_21_21(y, xap1, xap2);
+        matrix.multiply_32_21(K, xap2, xap3);
+        matrix.sum_31_31(xa, xap3, xap);
 
         /// mat Pp = (I - K * jac_C) * P;
-        multiply_32_23(K, jac_C, Pp1);
-        sub_33_33(I, Pp1, Pp2);
-        multiply_33_33(Pp2, P, Pp);
+        matrix.multiply_32_23(K, jac_C, Pp1);
+        matrix.sub_33_33(I, Pp1, Pp2);
+        matrix.multiply_33_33(Pp2, P, Pp);
 
         /// xp = A * xap + B * theta;
-        multiply_33_31(A, xap, xp1);
-        multiply_31_11(B, theta, Bt);
-        sum_31_31(xp1, Bt, xp);
+        matrix.multiply_33_31(A, xap, xp1);
+        matrix.multiply_31_11(B, theta, Bt);
+        matrix.sum_31_31(xp1, Bt, xp);
 
         /// P = ((A * Pp) * trans(A)) + noise_state;
-        multiply_33_33(A, Pp, P1);
-        transpose_33(A, At);
-        multiply_33_33(P1, At, P2);
-        sum_33_33(P2, noise_state, P);
+        matrix.multiply_33_33(A, Pp, P1);
+        matrix.transpose_33(A, At);
+        matrix.multiply_33_33(P1, At, P2);
+        matrix.sum_33_33(P2, noise_state, P);
 
 
         x1 = xp[0][0];

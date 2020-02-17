@@ -3,6 +3,7 @@
 
 CMakeFiles/kalman.dir/src/kalman_obs.cpp.o
  /home/vant3d/catkin_ws/src/Gyro-stabilized-Simulation/gyro_gazebo/src/kalman_obs.cpp
+ /home/vant3d/catkin_ws/src/Gyro-stabilized-Simulation/gyro_gazebo/src/matrix.h
  /opt/ros/kinetic/include/geometry_msgs/Quaternion.h
  /opt/ros/kinetic/include/geometry_msgs/Vector3.h
  /opt/ros/kinetic/include/message_filters/connection.h
