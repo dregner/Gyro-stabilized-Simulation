@@ -9,9 +9,9 @@
 
 double roll, pitch, yaw, roll_dot, pitch_dot, yaw_dot;
 double x1, x2, x3, theta;
-const float K1 = -4.2762;
-const float K2 = -1.1504;
-const float K3 = -1.5896;
+const float K1 = -3.1209;
+const float K2 = -1.1480;
+const float K3 = -1.4681;
 double RadToDeg = 180 / M_PI;
 int countt; int Ts = 5;
     

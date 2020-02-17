@@ -70,7 +70,7 @@
         <!-- Unser Interface -->
         <gui fullscreen='0'>
             <camera name='user_camera'>
-                <pose frame=''>-2 -3.37 2.5 0 0.4 1.17</pose>
+                <pose frame=''>-4.35 -0.83 0.5186 0 -0.26 0.35</pose>
                 <view_controller>orbit</view_controller>
                 <projection_type>perspective</projection_type>
             </camera>

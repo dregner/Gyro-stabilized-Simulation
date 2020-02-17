@@ -22,46 +22,6 @@
 //mat B = {-0.0039, 0.01, -0.7896};
 
 
-double A[3][3] = {{1.0053, 0, 0.01},
-                  {0,      1, 0},
-                  {1.0652, 0, 1.053}};
-double B[3][1] = {{-0.0039},
-                  {0.01},
-                  {-0.7896}};
-
-
-///--------SAIDAS h(x)--------
-// DUAS SAIDAS POS MOTO E GIRO
-//mat jac_C = {{1, 0, 0},{0, 1, 0}};
-double jac_C[2][3] = {{1, 0, 0},
-                      {0, 1, 0}};
-
-///--------Ruidos----------
-/// Ruido de entrada
-/* mat noise_state = {{10 ^ -8, 0,        0},
-                   {0,       10 ^ -11, 0},
-                   {0,       0,        10 ^ -9}};*/
-double noise_state[3][3] = {{10 ^ -8, 0,        0},
-                            {0,       10 ^ -11, 0},
-                            {0,       0,        10 ^ -9}};
-
-///Ruido duas saidas
-/// Duas saidas
-/*mat noise_exit = {{10 ^ -4, 0}, {0,       10 ^ -4}};
-mat S(2, 2, fill::eye);
-mat P(3, 3, fill::eye);
-mat I(3, 3, fill::eye);*/
-double noise_exit[2][2] = {{10 ^ -4, 0},
-                           {0,       10 ^ -4}};
-double S[2][2] = {{1, 0},
-                  {0, 1}};
-double P[3][3] = {{1, 0, 0},
-                  {0, 1, 0},
-                  {0, 0, 1}};
-double I[3][3] = {{1, 0, 0},
-                  {0, 1, 0},
-                  {0, 0, 1}};
-
 
 double roll, pitch, yaw, roll_dot, pitch_dot, yaw_dot;
 double x1 = 0;
@@ -90,13 +50,62 @@ private:
 
     ignition::math::Quaterniond rpy;
 
+
+    double A[3][3] = {{1.0053,0, 0.01},{0,1, 0},{1.0652, 0, 1.053}};
+    double B[3][1] = {{-0.0039},{0.01},{-0.7896}};
+
+
+///--------SAIDAS h(x)--------
+// DUAS SAIDAS POS MOTO E GIRO
+//mat jac_C = {{1, 0, 0},{0, 1, 0}};
+    double jac_C[2][3] = {{1, 0, 0},{0, 1, 0}};
+
+///--------Ruidos----------
+/// Ruido de entrada
+    double noise_state[3][3] = {{10e-8,0,0},{0,10e-11, 0},{0,0,10e-9}};
+
+    double noise_exit[2][2] = {{10e-4, 0},{0,10e-4}};
+
+    /// ------- Variaveis Auxiliares ---------
+    double jac_Ct[3][2] = {{0,0},{0,0},{0,0}};
+    double s1[2][3]= {{0,0,0},{0,0,0}};;
+    double S1[2][2]= {{0,0},{0,0}};
+
+    /// K = (P * trans(jac_C)) * inv(S);
+    double k1[3][2] = {{0,0},{0,0},{0,0}};
+    double K[3][2] = {{0,0},{0,0},{0,0}};
+
+    /// mat xap = xa + K * (y - jac_C * xa);
+    double xap1[2][1] = {{0},{0}};
+    double xap2[2][1] = {{0},{0}};
+    double xap3[3][1] = {{0},{0},{0}};
+    double xap[3][1] = {{0},{0},{0}};
+    /// mat Pp = (I - K * jac_C) * P;
+    double Pp1[3][3] = {{0,0,0},{0,0,0},{0,0,0}};
+    double Pp2[3][3] = {{0,0,0},{0,0,0},{0,0,0}};
+    double Pp[3][3] = {{0,0,0},{0,0,0},{0,0,0}};
+
+    /// xp = A * xap + B * theta;
+    double xp1[3][1] = {{0},{0},{0}};
+    double xp[3][1] = {{0},{0},{0}};
+    double Bt[3][1] = {{0},{0},{0}};
+
+    /// P = ((A * Pp) * trans(A)) + noise_state;
+    double P1[3][3] = {{0,0,0},{0,0,0},{0,0,0}};
+    double At[3][3] = {{0,0,0},{0,0,0},{0,0,0}};
+    double P2[3][3] = {{0,0,0},{0,0,0},{0,0,0}};
+    double S[2][2] = {{1, 0},
+                      {0, 1}};
+    double P[3][3] = {{1.0, 0, 0},{0, 1.0, 0},{0, 0, 1.0}};
+    double I[3][3] = {{1, 0, 0},{0, 1, 0},{0, 0, 1}};
+
+
     void multiply_23_33(double a[2][3], double b[3][3], double result[2][3]) {
         for (int i = 0; i < 2; i++) {
             for (int j = 0; j < 3; j++) {
                 result[i][j] = 0;
                 for (int k = 0; k < 3; k++)
-                    result[i][j] += a[i][k] *
-                                    b[k][j];
+                    result[i][j] += a[i][k]*b[k][j];
             }
         }
     }
@@ -106,8 +115,7 @@ private:
             for (int j = 0; j < 1; j++) {
                 result[i][j] = 0;
                 for (int k = 0; k < 3; k++)
-                    result[i][j] += a[i][k] *
-                                    b[k][j];
+                    result[i][j] += a[i][k]*b[k][j];
             }
         }
     }
@@ -117,8 +125,7 @@ private:
             for (int j = 0; j < 2; j++) {
                 result[i][j] = 0;
                 for (int k = 0; k < 3; k++)
-                    result[i][j] += a[i][k] *
-                                    b[k][j];
+                    result[i][j] += a[i][k]*b[k][j];
             }
         }
     }
@@ -128,8 +135,7 @@ private:
             for (int j = 0; j < 3; j++) {
                 result[i][j] = 0;
                 for (int k = 0; k < 3; k++)
-                    result[i][j] += a[i][k] *
-                                    b[k][j];
+                    result[i][j] += a[i][k]*b[k][j];
             }
         }
     }
@@ -139,8 +145,7 @@ private:
             for (int j = 0; j < 1; j++) {
                 result[i][j] = 0;
                 for (int k = 0; k < 3; k++)
-                    result[i][j] += a[i][k] *
-                                    b[k][j];
+                    result[i][j] += a[i][k]*b[k][j];
             }
         }
     }
@@ -150,8 +155,7 @@ private:
             for (int j = 0; j < 2; j++) {
                 result[i][j] = 0;
                 for (int k = 0; k < 3; k++)
-                    result[i][j] += a[i][k] *
-                                    b[k][j];
+                    result[i][j] += a[i][k]*b[k][j];
             }
         }
     }
@@ -161,8 +165,7 @@ private:
             for (int j = 0; j < 1; j++) {
                 result[i][j] = 0;
                 for (int k = 0; k < 2; k++)
-                    result[i][j] += a[i][k] *
-                                    b[k][j];
+                    result[i][j] += a[i][k]*b[k][j];
             }
         }
     }
@@ -180,8 +183,7 @@ private:
             for (int j = 0; j < 3; j++) {
                 result[i][j] = 0;
                 for (int k = 0; k < 2; k++)
-                    result[i][j] += a[i][k] *
-                                    b[k][j];
+                    result[i][j] += a[i][k]*b[k][j];
             }
         }
     }
@@ -246,7 +248,7 @@ private:
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 3; j++) {
 
-                result[i][j] = (double) (a[i][j]) / (b[i][j]);
+                result[i][j] = (a[i][j]/ (b[i][j]);
             }
         }
     }
@@ -277,8 +279,8 @@ public:
         y_1 = rpy.Roll();
 //      x3 = imu->angular_velocity.x;
         /// OBSERVA
-//        kalman();
-        observer();
+        kalman();
+//        observer();
 
         if (obs.is_open()) {
             obs << tout << "\t" << x1 << "\t" << x2 << "\t" << x3 << "\n";
@@ -357,7 +359,6 @@ public:
         transpose_33(A, At);
         double P2[3][3];
         multiply_33_33(P1, At, P2);
-        double P[3][3];
         sum_33_33(P2, noise_state, P);
 
         x1 = xp[0][0];

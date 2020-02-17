@@ -67,8 +67,8 @@ set(gyro_gazebo_CONFIG_INCLUDED TRUE)
 
 # set variables for source/devel/install prefixes
 if("FALSE" STREQUAL "TRUE")
-  set(gyro_gazebo_SOURCE_PREFIX /home/vant3d/catkin_ws/src/Gyro-stabilized-Simulation/gyro_gazebo)
-  set(gyro_gazebo_DEVEL_PREFIX /home/vant3d/catkin_ws/src/Gyro-stabilized-Simulation/gyro_gazebo/cmake-build-debug/devel)
+  set(gyro_gazebo_SOURCE_PREFIX /home/daniel/catkin_ws/src/Gyro-stabilized-Simulation/gyro_gazebo)
+  set(gyro_gazebo_DEVEL_PREFIX /home/daniel/catkin_ws/src/Gyro-stabilized-Simulation/gyro_gazebo/cmake-build-debug/devel)
   set(gyro_gazebo_INSTALL_PREFIX "")
   set(gyro_gazebo_PREFIX ${gyro_gazebo_DEVEL_PREFIX})
 else()
@@ -154,7 +154,7 @@ foreach(library ${libraries})
     set(lib_path "")
     set(lib "${library}-NOTFOUND")
     # since the path where the library is found is returned we have to iterate over the paths manually
-    foreach(path /usr/local/lib;/home/vant3d/catkin_ws/devel/lib;/opt/ros/kinetic/lib)
+    foreach(path /usr/local/lib;/home/daniel/catkin_ws/devel/lib;/opt/ros/kinetic/lib)
       find_library(lib ${library}
         PATHS ${path}
         NO_DEFAULT_PATH NO_CMAKE_FIND_ROOT_PATH)
