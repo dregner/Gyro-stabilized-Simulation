@@ -6,7 +6,7 @@
 
 #IncludeRegexTransform: 
 
-/home/daniel/catkin_ws/src/Gyro-stabilized-Simulation/gyro_gazebo/src/kalman_obs.cpp
+/home/vant3d/catkin_ws/src/Gyro-stabilized-Simulation/gyro_gazebo/src/kalman_obs.cpp
 ros/ros.h
 -
 sensor_msgs/Imu.h
@@ -30,6 +30,8 @@ string
 fstream
 -
 iostream
+-
+matrix.h
 -
 
 /opt/ros/kinetic/include/geometry_msgs/Quaternion.h

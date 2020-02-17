@@ -60,6 +60,8 @@ add_executable(kalman src/kalman_obs.cpp)
 target_link_libraries(kalman ${catkin_LIBRARIES})
 
 
+
+
 foreach(dir launch models resource worlds)
     install(DIRECTORY ${dir}/
             DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}/${dir})

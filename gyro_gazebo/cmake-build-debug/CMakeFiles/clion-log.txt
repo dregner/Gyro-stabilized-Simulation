@@ -1,10 +1,10 @@
-/opt/clion-2019.2.4/bin/cmake/linux/bin/cmake -DCMAKE_BUILD_TYPE=Debug -G "CodeBlocks - Unix Makefiles" /home/daniel/catkin_ws/src/Gyro-stabilized-Simulation/gyro_gazebo
+/opt/clion-2019.2.3/bin/cmake/linux/bin/cmake -DCMAKE_BUILD_TYPE=Debug -G "CodeBlocks - Unix Makefiles" /home/vant3d/catkin_ws/src/Gyro-stabilized-Simulation/gyro_gazebo
 -- Found Boost: /usr/include (found suitable version "1.58.0", minimum required is "1.40.0") found components:  thread system filesystem program_options regex iostreams date_time chrono atomic 
 -- Found Boost: /usr/include (found version "1.58.0")  
 -- Looking for OGRE...
 -- Found Ogre Ghadamon (1.9.0)
 -- Found OGRE: optimized;/usr/lib/x86_64-linux-gnu/libOgreMain.so;debug;/usr/lib/x86_64-linux-gnu/libOgreMain.so
-CMake Warning (dev) at /opt/clion-2019.2.4/bin/cmake/linux/share/cmake-3.15/Modules/FindBoost.cmake:1270 (if):
+CMake Warning (dev) at /opt/clion-2019.2.3/bin/cmake/linux/share/cmake-3.15/Modules/FindBoost.cmake:1270 (if):
   Policy CMP0054 is not set: Only interpret if() arguments as variables or
   keywords when unquoted.  Run "cmake --help-policy CMP0054" for policy
   details.  Use the cmake_policy command to set the policy and suppress this
@@ -14,7 +14,7 @@ CMake Warning (dev) at /opt/clion-2019.2.4/bin/cmake/linux/share/cmake-3.15/Modu
   policy is set to NEW.  Since the policy is not set the OLD behavior will be
   used.
 Call Stack (most recent call first):
-  /opt/clion-2019.2.4/bin/cmake/linux/share/cmake-3.15/Modules/FindBoost.cmake:1904 (_Boost_MISSING_DEPENDENCIES)
+  /opt/clion-2019.2.3/bin/cmake/linux/share/cmake-3.15/Modules/FindBoost.cmake:1904 (_Boost_MISSING_DEPENDENCIES)
   /usr/share/OGRE/cmake/modules/FindOGRE.cmake:318 (find_package)
   /usr/lib/x86_64-linux-gnu/cmake/gazebo/gazebo-config.cmake:108 (find_package)
   CMakeLists.txt:11 (find_package)
@@ -32,16 +32,16 @@ This warning is for project developers.  Use -Wno-dev to suppress it.
 -- Found OGRE_Volume: optimized;/usr/lib/x86_64-linux-gnu/libOgreVolume.so;debug;/usr/lib/x86_64-linux-gnu/libOgreVolume.so
 -- Looking for OGRE_Overlay...
 -- Found OGRE_Overlay: optimized;/usr/lib/x86_64-linux-gnu/libOgreOverlay.so;debug;/usr/lib/x86_64-linux-gnu/libOgreOverlay.so
--- Using CATKIN_DEVEL_PREFIX: /home/daniel/catkin_ws/src/Gyro-stabilized-Simulation/gyro_gazebo/cmake-build-debug/devel
--- Using CMAKE_PREFIX_PATH: /home/daniel/catkin_ws/devel;/opt/ros/kinetic
--- This workspace overlays: /home/daniel/catkin_ws/devel;/opt/ros/kinetic
+-- Using CATKIN_DEVEL_PREFIX: /home/vant3d/catkin_ws/src/Gyro-stabilized-Simulation/gyro_gazebo/cmake-build-debug/devel
+-- Using CMAKE_PREFIX_PATH: /home/vant3d/catkin_ws/devel;/opt/ros/kinetic
+-- This workspace overlays: /home/vant3d/catkin_ws/devel;/opt/ros/kinetic
 -- Found PythonInterp: /usr/bin/python2 (found suitable version "2.7.12", minimum required is "2") 
 -- Using PYTHON_EXECUTABLE: /usr/bin/python2
 -- Using Debian Python package layout
 -- Using empy: /usr/bin/empy
 -- Using CATKIN_ENABLE_TESTING: ON
 -- Call enable_testing()
--- Using CATKIN_TEST_RESULTS_DIR: /home/daniel/catkin_ws/src/Gyro-stabilized-Simulation/gyro_gazebo/cmake-build-debug/test_results
+-- Using CATKIN_TEST_RESULTS_DIR: /home/vant3d/catkin_ws/src/Gyro-stabilized-Simulation/gyro_gazebo/cmake-build-debug/test_results
 -- Found gtest sources under '/usr/src/gmock': gtests will be built
 -- Found gmock sources under '/usr/src/gmock': gmock will be built
 -- Found PythonInterp: /usr/bin/python2 (found version "2.7.12") 
@@ -51,4 +51,4 @@ This warning is for project developers.  Use -Wno-dev to suppress it.
 -- Using these message generators: gencpp;geneus;genlisp;gennodejs;genpy
 -- Configuring done
 -- Generating done
--- Build files have been written to: /home/daniel/catkin_ws/src/Gyro-stabilized-Simulation/gyro_gazebo/cmake-build-debug
+-- Build files have been written to: /home/vant3d/catkin_ws/src/Gyro-stabilized-Simulation/gyro_gazebo/cmake-build-debug
