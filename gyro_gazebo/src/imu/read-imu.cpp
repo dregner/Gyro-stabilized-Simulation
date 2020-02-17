@@ -26,13 +26,13 @@ void read_imu(const sensor_msgs::Imu::ConstPtr &msg) {
     rpy.Set(msg->orientation.w, msg->orientation.x, msg->orientation.y, msg->orientation.z);
 
     roll = rpy.Roll();
-    roll *= RadToDeg;
+//    roll *= RadToDeg;
 
     pitch = rpy.Pitch();
-    pitch *= RadToDeg;
+//    pitch *= RadToDeg;
 
     yaw = rpy.Yaw();
-    yaw *= RadToDeg;
+//    yaw *= RadToDeg;
 
 
     roll_dot = msg->angular_velocity.x;

@@ -13,56 +13,6 @@
 #include <fstream>
 #include <iostream>
 
-/// ======== CONFIGURAÇÕES FILTROD E KALMAN =========
-/// Tempo de amostragem 5 ms
-///----------Jacobiano F e G------------
-//mat A(3,3);
-//A = 1.0053 << 0 << 0.01 << endr << 0 << 1 << 0 << endr << 1.0652<< 0 << 1.053 << endr;
-//mat A = {{1.0053, 0, 0.01}, {0,      1, 0},  {1.0652, 0, 1.053}};
-//mat B = {-0.0039, 0.01, -0.7896};
-
-
-double A[3][3] = {{1.0053, 0, 0.01},
-                  {0,      1, 0},
-                  {1.0652, 0, 1.053}};
-double B[3][1] = {{-0.0039},
-                  {0.01},
-                  {-0.7896}};
-
-
-///--------SAIDAS h(x)--------
-// DUAS SAIDAS POS MOTO E GIRO
-//mat jac_C = {{1, 0, 0},{0, 1, 0}};
-double jac_C[2][3] = {{1, 0, 0},
-                      {0, 1, 0}};
-
-///--------Ruidos----------
-/// Ruido de entrada
-/* mat noise_state = {{10 ^ -8, 0,        0},
-                   {0,       10 ^ -11, 0},
-                   {0,       0,        10 ^ -9}};*/
-double noise_state[3][3] = {{10 ^ -8, 0,        0},
-                            {0,       10 ^ -11, 0},
-                            {0,       0,        10 ^ -9}};
-
-///Ruido duas saidas
-/// Duas saidas
-/*mat noise_exit = {{10 ^ -4, 0}, {0,       10 ^ -4}};
-mat S(2, 2, fill::eye);
-mat P(3, 3, fill::eye);
-mat I(3, 3, fill::eye);*/
-double noise_exit[2][2] = {{10 ^ -4, 0},
-                           {0,       10 ^ -4}};
-double S[2][2] = {{1, 0},
-                  {0, 1}};
-double P[3][3] = {{1, 0, 0},
-                  {0, 1, 0},
-                  {0, 0, 1}};
-double I[3][3] = {{1, 0, 0},
-                  {0, 1, 0},
-                  {0, 0, 1}};
-
-
 double roll, pitch, yaw, roll_dot, pitch_dot, yaw_dot;
 double x1 = 0;
 double x2 = 0;
@@ -89,6 +39,56 @@ private:
     std_msgs::Float64 msg_servo;
 
     ignition::math::Quaterniond rpy;
+
+    /// Global variables for Kalman
+
+    double A[3][3] = {{1.0053,0, 0.01},{0,1, 0},{1.0652, 0, 1.053}};
+    double B[3][1] = {{-0.0039},{0.01},{-0.7896}};
+
+
+///--------SAIDAS h(x)--------
+// DUAS SAIDAS POS MOTO E GIRO
+//mat jac_C = {{1, 0, 0},{0, 1, 0}};
+    double jac_C[2][3] = {{1, 0, 0},{0, 1, 0}};
+
+///--------Ruidos----------
+/// Ruido de entrada
+    double noise_state[3][3] = {{10e-8,0,0},{0,10e-11, 0},{0,0,10e-9}};
+
+    double noise_exit[2][2] = {{10e-4, 0},{0,10e-4}};
+
+/// ------- Variaveis Auxiliares ---------
+    double jac_Ct[3][2] = {{0,0},{0,0},{0,0}};
+    double s1[2][3] = {{0,0,0},{0,0,0}}; //Aux S
+    double S1[2][2] = {{0,0},{0,0}}; //Aux S
+    double Si[2][2] = {{0,0},{0,0}}; //Inverse S
+
+/// K = (P * trans(jac_C)) * inv(S);
+    double k1[3][2] = {{0,0},{0,0},{0,0}};
+    double K[3][2] = {{0,0},{0,0},{0,0}};
+
+/// mat xap = xa + K * (y - jac_C * xa);
+    double xap1[2][1] = {{0},{0}};
+    double xap2[2][1] = {{0},{0}};
+    double xap3[3][1] = {{0},{0},{0}};
+    double xap[3][1] = {{0},{0},{0}};
+/// mat Pp = (I - K * jac_C) * P;
+    double Pp1[3][3] = {{0,0,0},{0,0,0},{0,0,0}};
+    double Pp2[3][3] = {{0,0,0},{0,0,0},{0,0,0}};
+    double Pp[3][3] = {{0,0,0},{0,0,0},{0,0,0}};
+
+/// xp = A * xap + B * theta;
+    double xp1[3][1] = {{0},{0},{0}};
+    double xp[3][1] = {{0},{0},{0}};
+    double Bt[3][1] = {{0},{0},{0}};
+
+/// P = ((A * Pp) * trans(A)) + noise_state;
+    double P1[3][3] = {{0,0,0},{0,0,0},{0,0,0}};
+    double At[3][3] = {{0,0,0},{0,0,0},{0,0,0}};
+    double P2[3][3] = {{0,0,0},{0,0,0},{0,0,0}};
+    double S[2][2] = {{1, 0},{0, 1}};
+    double P[3][3] = {{1.0, 0, 0},{0, 1.0, 0},{0, 0, 1.0}};
+    double I[3][3] = {{1, 0, 0},{0, 1, 0},{0, 0, 1}};
 
     void multiply_23_33(double a[2][3], double b[3][3], double result[2][3]) {
         for (int i = 0; i < 2; i++) {
@@ -185,6 +185,16 @@ private:
             }
         }
     }
+    void multiply_32_22(double a[3][2], double b[2][2], double result[3][2]) {
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 2; j++) {
+                result[i][j] = 0;
+                for (int k = 0; k < 2; k++)
+                    result[i][j] += a[i][k] *
+                                    b[k][j];
+            }
+        }
+    }
 
     void transpose_33(double a[3][3], double transpose[3][3]) {
         for (int i = 0; i < 3; ++i) {
@@ -242,13 +252,107 @@ private:
         }
     }
 
-    void divMatrix(double a[2][2], double b[2][2], double result[2][2]) {
-        for (int i = 0; i < 3; i++) {
-            for (int j = 0; j < 3; j++) {
+    void getCofactor(double A[2][2], double temp[2][2], int p, int q, int n)
+    {
+        int i = 0, j = 0;
 
-                result[i][j] = (double) (a[i][j]) / (b[i][j]);
+        // Looping for each element of the matrix
+        for (int row = 0; row < n; row++)
+        {
+            for (int col = 0; col < n; col++)
+            {
+                //  Copying into temporary matrix only those element
+                //  which are not in given row and column
+                if (row != p && col != q)
+                {
+                    temp[i][j++] = A[row][col];
+
+                    // Row is filled, so increase row index and
+                    // reset col index
+                    if (j == n - 1)
+                    {
+                        j = 0;
+                        i++;
+                    }
+                }
             }
         }
+    }
+
+    //finding determinant
+    double determinant(double A[2][2], int n)
+    {
+        double D = 0; // Initialize result
+
+        //  Base case : if matrix contains single element
+        if (n == 1)
+            return A[0][0];
+
+        double temp[2][2]; // To store cofactors
+
+        int sign = 1;  // To store sign multiplier
+
+        // Iterate for each element of first row
+        for (int f = 0; f < n; f++)
+        {
+            // Getting Cofactor of A[0][f]
+            getCofactor(A, temp, 0, f, n);
+            D += sign * A[0][f] * determinant(temp, n - 1);
+
+            // terms are to be added with alternate sign
+            sign = -sign;
+        }
+
+        return D;
+    }
+
+// Function to get adjoint of A[N][N] in adj[N][N].
+    void adjoint(double A[2][2],double adj[2][2])
+    {
+        // temp is used to store cofactors of A[][]
+        int sign = 1;
+        double temp[2][2];
+
+        for (int i=0; i<2; i++)
+        {
+            for (int j=0; j<2; j++)
+            {
+                // Get cofactor of A[i][j]
+                getCofactor(A, temp, i, j, 3);
+
+                // sign of adj[j][i] positive if sum of row
+                // and column indexes is even.
+                sign = ((i+j)%2==0)? 1: -1;
+
+                // Interchanging rows and columns to get the
+                // transpose of the cofactor matrix
+                adj[j][i] = (sign)*(determinant(temp, 2-1));
+            }
+        }
+    }
+
+// Function to calculate and store inverse, returns false if
+// matrix is singular
+    bool inverse(double A[2][2], double inverse[2][2])
+    {
+        // Find determinant of A[][]
+        double det = determinant(A, 2);
+        if (det == 0)
+        {
+            std::cout << "Singular matrix, can't find its inverse";
+            return false;
+        }
+
+        // Find adjoint
+        double adj[2][2];
+        adjoint(A, adj);
+
+        // Find Inverse using formula "inverse(A) = adj(A)/det(A)"
+        for (int i=0; i<2; i++)
+            for (int j=0; j<2; j++)
+                inverse[i][j] = adj[i][j]/double(det);
+
+        return true;
     }
 
 
@@ -277,8 +381,8 @@ public:
         y_1 = rpy.Roll();
 //      x3 = imu->angular_velocity.x;
         /// OBSERVA
-//        kalman();
-        observer();
+        kalman();
+//        observer();
 
         if (obs.is_open()) {
             obs << tout << "\t" << x1 << "\t" << x2 << "\t" << x3 << "\n";
@@ -310,54 +414,36 @@ public:
         double y[2][1] = {{y_1},
                           {y_2}};
         /// S = (jac_C * P) * trans(jac_C) + noise_exit;
-        double jac_Ct[3][2];
         transpose_23(jac_C, jac_Ct);
-        double s1[2][3];
         multiply_23_33(jac_C, P, s1);
-        double S1[2][2];
         multiply_23_32(s1, jac_Ct, S1);
         sum_22_22(S1, noise_exit, S);
 
         /// K = (P * trans(jac_C)) * inv(S);
-        double k1[3][2];
         multiply_33_32(P, jac_Ct, k1);
-        double K[3][2];
-        divMatrix(k1, S, K);
+        inverse(S, Si);
+        multiply_32_22(k1, Si, K);
 
         /// mat xap = xa + K * (y - jac_C * xa);
-        double xap1[2][1];
         multiply_23_31(jac_C, xa, xap1);
-        double xap2[2][1];
         sub_21_21(y, xap1, xap2);
-        double xap3[3][1];
         multiply_32_21(K, xap2, xap3);
-        double xap[3][1];
         sum_31_31(xa, xap3, xap);
 
         /// mat Pp = (I - K * jac_C) * P;
-        double Pp1[3][3];
         multiply_32_23(K, jac_C, Pp1);
-        double Pp2[3][3];
         sub_33_33(I, Pp1, Pp2);
-        double Pp[3][3];
         multiply_33_33(Pp2, P, Pp);
 
         /// xp = A * xap + B * theta;
-        double xp1[3][1];
         multiply_33_31(A, xap, xp1);
-        double xp[3][1];
-        double Bt[3][1];
         multiply_31_11(B, theta, Bt);
         sum_31_31(xp1, Bt, xp);
 
         /// P = ((A * Pp) * trans(A)) + noise_state;
-        double P1[3][3];
         multiply_33_33(A, Pp, P1);
-        double At[3][3];
         transpose_33(A, At);
-        double P2[3][3];
         multiply_33_33(P1, At, P2);
-        double P[3][3];
         sum_33_33(P2, noise_state, P);
 
         x1 = xp[0][0];
