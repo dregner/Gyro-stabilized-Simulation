@@ -13,7 +13,55 @@
 #include <fstream>
 #include <iostream>
 
-#include "matrix.h"
+/// ======== CONFIGURAÇÕES FILTROD E KALMAN =========
+/// Tempo de amostragem 5 ms
+///----------Jacobiano F e G------------
+//mat A(3,3);
+//A = 1.0053 << 0 << 0.01 << endr << 0 << 1 << 0 << endr << 1.0652<< 0 << 1.053 << endr;
+//mat A = {{1.0053, 0, 0.01}, {0,      1, 0},  {1.0652, 0, 1.053}};
+//mat B = {-0.0039, 0.01, -0.7896};
+
+
+double A[3][3] = {{1.0053, 0, 0.01},
+                  {0,      1, 0},
+                  {1.0652, 0, 1.053}};
+double B[3][1] = {{-0.0039},
+                  {0.01},
+                  {-0.7896}};
+
+
+///--------SAIDAS h(x)--------
+// DUAS SAIDAS POS MOTO E GIRO
+//mat jac_C = {{1, 0, 0},{0, 1, 0}};
+double jac_C[2][3] = {{1, 0, 0},
+                      {0, 1, 0}};
+
+///--------Ruidos----------
+/// Ruido de entrada
+/* mat noise_state = {{10 ^ -8, 0,        0},
+                   {0,       10 ^ -11, 0},
+                   {0,       0,        10 ^ -9}};*/
+double noise_state[3][3] = {{10 ^ -8, 0,        0},
+                            {0,       10 ^ -11, 0},
+                            {0,       0,        10 ^ -9}};
+
+///Ruido duas saidas
+/// Duas saidas
+/*mat noise_exit = {{10 ^ -4, 0}, {0,       10 ^ -4}};
+mat S(2, 2, fill::eye);
+mat P(3, 3, fill::eye);
+mat I(3, 3, fill::eye);*/
+double noise_exit[2][2] = {{10 ^ -4, 0},
+                           {0,       10 ^ -4}};
+double S[2][2] = {{1, 0},
+                  {0, 1}};
+double P[3][3] = {{1, 0, 0},
+                  {0, 1, 0},
+                  {0, 0, 1}};
+double I[3][3] = {{1, 0, 0},
+                  {0, 1, 0},
+                  {0, 0, 1}};
+
 
 double roll, pitch, yaw, roll_dot, pitch_dot, yaw_dot;
 double x1 = 0;
@@ -41,58 +89,167 @@ private:
     std_msgs::Float64 msg_servo;
 
     ignition::math::Quaterniond rpy;
-    Matrix matrix;
 
+    void multiply_23_33(double a[2][3], double b[3][3], double result[2][3]) {
+        for (int i = 0; i < 2; i++) {
+            for (int j = 0; j < 3; j++) {
+                result[i][j] = 0;
+                for (int k = 0; k < 3; k++)
+                    result[i][j] += a[i][k] *
+                                    b[k][j];
+            }
+        }
+    }
 
-    /// Global variables for Kalman
+    void multiply_23_31(double a[2][3], double b[3][1], double result[2][1]) {
+        for (int i = 0; i < 2; i++) {
+            for (int j = 0; j < 1; j++) {
+                result[i][j] = 0;
+                for (int k = 0; k < 3; k++)
+                    result[i][j] += a[i][k] *
+                                    b[k][j];
+            }
+        }
+    }
 
-    double A[3][3] = {{1.0053,0, 0.01},{0,1, 0},{1.0652, 0, 1.053}};
-    double B[3][1] = {{-0.0039},{0.01},{-0.7896}};
+    void multiply_33_32(double a[3][3], double b[3][2], double result[3][2]) {
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 2; j++) {
+                result[i][j] = 0;
+                for (int k = 0; k < 3; k++)
+                    result[i][j] += a[i][k] *
+                                    b[k][j];
+            }
+        }
+    }
 
+    void multiply_33_33(double a[3][3], double b[3][3], double result[3][3]) {
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                result[i][j] = 0;
+                for (int k = 0; k < 3; k++)
+                    result[i][j] += a[i][k] *
+                                    b[k][j];
+            }
+        }
+    }
 
-///--------SAIDAS h(x)--------
-// DUAS SAIDAS POS MOTO E GIRO
-//mat jac_C = {{1, 0, 0},{0, 1, 0}};
-    double jac_C[2][3] = {{1, 0, 0},{0, 1, 0}};
+    void multiply_33_31(double a[3][3], double b[3][1], double result[3][1]) {
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 1; j++) {
+                result[i][j] = 0;
+                for (int k = 0; k < 3; k++)
+                    result[i][j] += a[i][k] *
+                                    b[k][j];
+            }
+        }
+    }
 
-///--------Ruidos----------
-/// Ruido de entrada
-    double noise_state[3][3] = {{10e-8,0,0},{0,10e-11, 0},{0,0,10e-9}};
+    void multiply_23_32(double a[2][3], double b[3][2], double result[2][2]) {
+        for (int i = 0; i < 2; i++) {
+            for (int j = 0; j < 2; j++) {
+                result[i][j] = 0;
+                for (int k = 0; k < 3; k++)
+                    result[i][j] += a[i][k] *
+                                    b[k][j];
+            }
+        }
+    }
 
-    double noise_exit[2][2] = {{10e-4, 0},{0,10e-4}};
+    void multiply_32_21(double a[3][2], double b[2][1], double result[3][1]) {
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 1; j++) {
+                result[i][j] = 0;
+                for (int k = 0; k < 2; k++)
+                    result[i][j] += a[i][k] *
+                                    b[k][j];
+            }
+        }
+    }
 
-/// ------- Variaveis Auxiliares ---------
-    double jac_Ct[3][2] = {{0,0},{0,0},{0,0}};
-    double s1[2][3] = {{0,0,0},{0,0,0}};
-    double S1[2][2] = {{0,0},{0,0}};
-    double Si[2][2] = {{0,0},{0,0}};
+    void multiply_31_11(double a[3][1], double b, double result[3][1]) {
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 1; j++) {
+                result[i][j] = a[i][j] * b;
+            }
+        }
+    }
 
-/// K = (P * trans(jac_C)) * inv(S);
-    double k1[3][2] = {{0,0},{0,0},{0,0}};
-    double K[3][2] = {{0,0},{0,0},{0,0}};
+    void multiply_32_23(double a[3][2], double b[2][3], double result[3][3]) {
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                result[i][j] = 0;
+                for (int k = 0; k < 2; k++)
+                    result[i][j] += a[i][k] *
+                                    b[k][j];
+            }
+        }
+    }
 
-/// mat xap = xa + K * (y - jac_C * xa);
-    double xap1[2][1] = {{0},{0}};
-    double xap2[2][1] = {{0},{0}};
-    double xap3[3][1] = {{0},{0},{0}};
-    double xap[3][1] = {{0},{0},{0}};
-/// mat Pp = (I - K * jac_C) * P;
-    double Pp1[3][3] = {{0,0,0},{0,0,0},{0,0,0}};
-    double Pp2[3][3] = {{0,0,0},{0,0,0},{0,0,0}};
-    double Pp[3][3] = {{0,0,0},{0,0,0},{0,0,0}};
+    void transpose_33(double a[3][3], double transpose[3][3]) {
+        for (int i = 0; i < 3; ++i) {
+            for (int j = 0; j < 3; ++j) {
+                transpose[j][i] = a[i][j];
+            }
+        }
+    }
 
-/// xp = A * xap + B * theta;
-    double xp1[3][1] = {{0},{0},{0}};
-    double xp[3][1] = {{0},{0},{0}};
-    double Bt[3][1] = {{0},{0},{0}};
+    void transpose_23(double a[2][3], double transpose[3][2]) {
+        for (int i = 0; i < 2; ++i) {
+            for (int j = 0; j < 3; ++j) {
+                transpose[j][i] = a[i][j];
+            }
+        }
+    }
 
-/// P = ((A * Pp) * trans(A)) + noise_state;
-    double P1[3][3] = {{0,0,0},{0,0,0},{0,0,0}};
-    double At[3][3] = {{0,0,0},{0,0,0},{0,0,0}};
-    double P2[3][3] = {{0,0,0},{0,0,0},{0,0,0}};
-    double S[2][2] = {{1, 0},{0, 1}};
-    double P[3][3] = {{1.0, 0, 0},{0, 1.0, 0},{0, 0, 1.0}};
-    double I[3][3] = {{1, 0, 0},{0, 1, 0},{0, 0, 1}};
+    void sub_33_33(double a[3][3], double b[3][3], double result[3][3]) {
+        for (int i = 0; i < 3; ++i) {
+            for (int j = 0; j < 3; ++j) {
+                result[i][j] = a[i][j] - b[i][j];
+            }
+        }
+    }
+
+    void sub_21_21(double a[2][1], double b[2][1], double result[2][1]) {
+        for (int i = 0; i < 2; ++i) {
+            for (int j = 0; j < 1; ++j) {
+                result[i][j] = a[i][j] - b[i][j];
+            }
+        }
+    }
+
+    void sum_33_33(double a[3][3], double b[3][3], double result[3][3]) {
+        for (int i = 0; i < 3; ++i) {
+            for (int j = 0; j < 3; ++j) {
+                result[i][j] = a[i][j] + b[i][j];
+            }
+        }
+    }
+
+    void sum_31_31(double a[3][1], double b[3][1], double result[3][1]) {
+        for (int i = 0; i < 3; ++i) {
+            for (int j = 0; j < 1; ++j) {
+                result[i][j] = a[i][j] + b[i][j];
+            }
+        }
+    }
+
+    void sum_22_22(double a[2][2], double b[2][2], double result[2][2]) {
+        for (int i = 0; i < 2; ++i) {
+            for (int j = 0; j < 2; ++j) {
+                result[i][j] = a[i][j] + b[i][j];
+            }
+        }
+    }
+
+    void divMatrix(double a[2][2], double b[2][2], double result[2][2]) {
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+
+                result[i][j] = (double) (a[i][j]) / (b[i][j]);
+            }
+        }
+    }
 
 
 public:
@@ -100,7 +257,6 @@ public:
         sub_theta1 = n_kalman.subscribe("/moto/joint_state", 10, &Read_Kalman::read_theta, this);
         sub_imu1 = n_kalman.subscribe("/imu_base", 10, &Read_Kalman::callback, this);
         obs.open("observer_states.txt");
-
     }
 
     ~Read_Kalman() {}
@@ -121,8 +277,8 @@ public:
         y_1 = rpy.Roll();
 //      x3 = imu->angular_velocity.x;
         /// OBSERVA
-        kalman();
-//        observer();
+//        kalman();
+        observer();
 
         if (obs.is_open()) {
             obs << tout << "\t" << x1 << "\t" << x2 << "\t" << x3 << "\n";
@@ -153,40 +309,56 @@ public:
 
         double y[2][1] = {{y_1},
                           {y_2}};
-
         /// S = (jac_C * P) * trans(jac_C) + noise_exit;
-        matrix.transpose_23(jac_C, jac_Ct);
-        matrix.multiply_23_33(jac_C, P, s1);
-        matrix.multiply_23_32(s1, jac_Ct, S1);
-        matrix.sum_22_22(S1, noise_exit, S);
+        double jac_Ct[3][2];
+        transpose_23(jac_C, jac_Ct);
+        double s1[2][3];
+        multiply_23_33(jac_C, P, s1);
+        double S1[2][2];
+        multiply_23_32(s1, jac_Ct, S1);
+        sum_22_22(S1, noise_exit, S);
 
         /// K = (P * trans(jac_C)) * inv(S);
-        matrix.multiply_33_32(P, jac_Ct, k1);
-        matrix.inverse(S, Si);
-        matrix.multiply_32_22(k1, Si, K);
+        double k1[3][2];
+        multiply_33_32(P, jac_Ct, k1);
+        double K[3][2];
+        divMatrix(k1, S, K);
 
         /// mat xap = xa + K * (y - jac_C * xa);
-        matrix.multiply_23_31(jac_C, xa, xap1);
-        matrix.sub_21_21(y, xap1, xap2);
-        matrix.multiply_32_21(K, xap2, xap3);
-        matrix.sum_31_31(xa, xap3, xap);
+        double xap1[2][1];
+        multiply_23_31(jac_C, xa, xap1);
+        double xap2[2][1];
+        sub_21_21(y, xap1, xap2);
+        double xap3[3][1];
+        multiply_32_21(K, xap2, xap3);
+        double xap[3][1];
+        sum_31_31(xa, xap3, xap);
 
         /// mat Pp = (I - K * jac_C) * P;
-        matrix.multiply_32_23(K, jac_C, Pp1);
-        matrix.sub_33_33(I, Pp1, Pp2);
-        matrix.multiply_33_33(Pp2, P, Pp);
+        double Pp1[3][3];
+        multiply_32_23(K, jac_C, Pp1);
+        double Pp2[3][3];
+        sub_33_33(I, Pp1, Pp2);
+        double Pp[3][3];
+        multiply_33_33(Pp2, P, Pp);
 
         /// xp = A * xap + B * theta;
-        matrix.multiply_33_31(A, xap, xp1);
-        matrix.multiply_31_11(B, theta, Bt);
-        matrix.sum_31_31(xp1, Bt, xp);
+        double xp1[3][1];
+        multiply_33_31(A, xap, xp1);
+        double xp[3][1];
+        double Bt[3][1];
+        multiply_31_11(B, theta, Bt);
+        sum_31_31(xp1, Bt, xp);
 
         /// P = ((A * Pp) * trans(A)) + noise_state;
-        matrix.multiply_33_33(A, Pp, P1);
-        matrix.transpose_33(A, At);
-        matrix.multiply_33_33(P1, At, P2);
-        matrix.sum_33_33(P2, noise_state, P);
-
+        double P1[3][3];
+        multiply_33_33(A, Pp, P1);
+        double At[3][3];
+        transpose_33(A, At);
+        double P2[3][3];
+        multiply_33_33(P1, At, P2);
+        double P[3][3];
+        sum_33_33(P2, noise_state, P);
 
         x1 = xp[0][0];
         x2 = xp[1][0];

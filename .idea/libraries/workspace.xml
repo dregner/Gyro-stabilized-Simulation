@@ -1,45 +1,6 @@
 <component name="libraryTable">
   <library name="workspace">
-    <CLASSES>
-      <root url="file://$PROJECT_DIR$/../rotors_simulator/rotors_joy_interface" />
-      <root url="file://$PROJECT_DIR$/../mav_comm/mav_msgs" />
-      <root url="file://$PROJECT_DIR$/../mav_comm/mav_planning_msgs" />
-      <root url="file://$PROJECT_DIR$/gyro_description" />
-      <root url="file://$PROJECT_DIR$/../rotors_simulator/rotors_comm" />
-      <root url="file://$PROJECT_DIR$/../mavros/test_mavros" />
-      <root url="file://$PROJECT_DIR$/../image_pipeline/image_pipeline" />
-      <root url="file://$PROJECT_DIR$/../rotors_simulator/rotors_hil_interface" />
-      <root url="file://$PROJECT_DIR$/../unique_identifier/unique_id" />
-      <root url="file://$PROJECT_DIR$/../mav_comm/mav_comm" />
-      <root url="file://$PROJECT_DIR$/../image_pipeline/image_view" />
-      <root url="file://$PROJECT_DIR$/../mavros/libmavconn" />
-      <root url="file://$PROJECT_DIR$/../rotors_simulator/rqt_rotors" />
-      <root url="file:///opt/ros/kinetic/share" />
-      <root url="file://$PROJECT_DIR$/gyro_control" />
-      <root url="file://$PROJECT_DIR$/../rotors_simulator/rotors_control" />
-      <root url="file://$PROJECT_DIR$/../geographic_info/geographic_info" />
-      <root url="file://$PROJECT_DIR$/../unique_identifier/uuid_msgs" />
-      <root url="file://$PROJECT_DIR$/../mav_comm/mav_system_msgs" />
-      <root url="file://$PROJECT_DIR$/../image_pipeline/image_rotate" />
-      <root url="file://$PROJECT_DIR$/../mavros/mavros" />
-      <root url="file://$PROJECT_DIR$/../mavros/mavros_msgs" />
-      <root url="file://$PROJECT_DIR$/../mav_comm/mav_state_machine_msgs" />
-      <root url="file://$PROJECT_DIR$/../rotors_simulator/rotors_evaluation" />
-      <root url="file://$PROJECT_DIR$/../mavros/mavros_extras" />
-      <root url="file://$PROJECT_DIR$/../image_pipeline/depth_image_proc" />
-      <root url="file://$PROJECT_DIR$/../rotors_simulator/rotors_gazebo_plugins" />
-      <root url="file://$PROJECT_DIR$/../image_pipeline/stereo_image_proc" />
-      <root url="file://$PROJECT_DIR$/../geographic_info/geodesy" />
-      <root url="file://$PROJECT_DIR$/gyro_gazebo" />
-      <root url="file://$PROJECT_DIR$/../rotors_simulator/rotors_simulator" />
-      <root url="file://$PROJECT_DIR$/../rotors_simulator/rotors_gazebo" />
-      <root url="file://$PROJECT_DIR$/../geographic_info/geographic_msgs" />
-      <root url="file://$PROJECT_DIR$/../image_pipeline/camera_calibration" />
-      <root url="file://$PROJECT_DIR$/../image_pipeline/image_proc" />
-      <root url="file://$PROJECT_DIR$/../rotors_simulator/rotors_description" />
-      <root url="file://$PROJECT_DIR$/../image_pipeline/image_publisher" />
-      <root url="file://$PROJECT_DIR$/../unique_identifier/unique_identifier" />
-    </CLASSES>
+    <CLASSES />
     <SOURCES>
       <root url="file://$PROJECT_DIR$/../.." />
     </SOURCES>
