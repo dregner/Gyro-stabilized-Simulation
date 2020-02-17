@@ -1587,6 +1587,33 @@ src/kalman_obs.cpp.s:
 	$(MAKE) -f CMakeFiles/kalman.dir/build.make CMakeFiles/kalman.dir/src/kalman_obs.cpp.s
 .PHONY : src/kalman_obs.cpp.s
 
+src/matrix.o: src/matrix.cpp.o
+
+.PHONY : src/matrix.o
+
+# target to build an object file
+src/matrix.cpp.o:
+	$(MAKE) -f CMakeFiles/kalman.dir/build.make CMakeFiles/kalman.dir/src/matrix.cpp.o
+.PHONY : src/matrix.cpp.o
+
+src/matrix.i: src/matrix.cpp.i
+
+.PHONY : src/matrix.i
+
+# target to preprocess a source file
+src/matrix.cpp.i:
+	$(MAKE) -f CMakeFiles/kalman.dir/build.make CMakeFiles/kalman.dir/src/matrix.cpp.i
+.PHONY : src/matrix.cpp.i
+
+src/matrix.s: src/matrix.cpp.s
+
+.PHONY : src/matrix.s
+
+# target to generate assembly for a file
+src/matrix.cpp.s:
+	$(MAKE) -f CMakeFiles/kalman.dir/build.make CMakeFiles/kalman.dir/src/matrix.cpp.s
+.PHONY : src/matrix.cpp.s
+
 src/observer-control_state.o: src/observer-control_state.cpp.o
 
 .PHONY : src/observer-control_state.o
@@ -1793,6 +1820,9 @@ help:
 	@echo "... src/kalman_obs.o"
 	@echo "... src/kalman_obs.i"
 	@echo "... src/kalman_obs.s"
+	@echo "... src/matrix.o"
+	@echo "... src/matrix.i"
+	@echo "... src/matrix.s"
 	@echo "... src/observer-control_state.o"
 	@echo "... src/observer-control_state.i"
 	@echo "... src/observer-control_state.s"

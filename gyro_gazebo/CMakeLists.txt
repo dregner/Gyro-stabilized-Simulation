@@ -56,7 +56,7 @@ target_link_libraries(read_states ${catkin_LIBRARIES})
 #add_executable(read_kalman src/kalman_observer.cpp)
 #target_link_libraries(read_kalman ${catkin_LIBRARIES})
 
-add_executable(kalman src/kalman_obs.cpp)
+add_executable(kalman src/kalman_obs.cpp src/matrix.cpp)
 target_link_libraries(kalman ${catkin_LIBRARIES})
 
 

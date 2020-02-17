@@ -44,7 +44,7 @@ public:
 
     void sum_22_22(double a[2][2], double b[2][2], double result[2][2]);
 
-    void divMatrix(double a[2][2], double b[2][2], double result[2][2]);
+    void getCofactor(double A[2][2], double temp[2][2], int p, int q, int n);
 
     bool inverse(double A[2][2], double inverse[2][2]);
 

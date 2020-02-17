@@ -1923,6 +1923,9 @@
 		<Unit filename="/home/vant3d/catkin_ws/src/Gyro-stabilized-Simulation/gyro_gazebo/src/kalman_obs.cpp">
 			<Option target="kalman"/>
 		</Unit>
+		<Unit filename="/home/vant3d/catkin_ws/src/Gyro-stabilized-Simulation/gyro_gazebo/src/matrix.cpp">
+			<Option target="kalman"/>
+		</Unit>
 		<Unit filename="/home/vant3d/catkin_ws/src/Gyro-stabilized-Simulation/gyro_gazebo/src/observer-control_state.cpp">
 			<Option target="observer_state"/>
 		</Unit>

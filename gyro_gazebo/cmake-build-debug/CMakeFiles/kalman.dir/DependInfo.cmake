@@ -5,6 +5,7 @@ set(CMAKE_DEPENDS_LANGUAGES
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_CXX
   "/home/vant3d/catkin_ws/src/Gyro-stabilized-Simulation/gyro_gazebo/src/kalman_obs.cpp" "/home/vant3d/catkin_ws/src/Gyro-stabilized-Simulation/gyro_gazebo/cmake-build-debug/CMakeFiles/kalman.dir/src/kalman_obs.cpp.o"
+  "/home/vant3d/catkin_ws/src/Gyro-stabilized-Simulation/gyro_gazebo/src/matrix.cpp" "/home/vant3d/catkin_ws/src/Gyro-stabilized-Simulation/gyro_gazebo/cmake-build-debug/CMakeFiles/kalman.dir/src/matrix.cpp.o"
   )
 set(CMAKE_CXX_COMPILER_ID "GNU")
 

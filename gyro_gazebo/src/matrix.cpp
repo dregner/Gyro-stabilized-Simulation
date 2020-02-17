@@ -2,7 +2,10 @@
 // Created by vant3d on 17/02/2020.
 //
 
-#include "matrix.h"
+#include "../include/matrix.h"
+#include <string>
+#include <fstream>
+#include <iostream>
 
 void Matrix::multiply_23_33(double a[2][3], double b[3][3], double result[2][3]) {
     for (int i = 0; i < 2; i++) {
@@ -100,7 +103,6 @@ void Matrix::multiply_32_23(double a[3][2], double b[2][3], double result[3][3])
         }
     }
 }
-
 void Matrix::transpose_33(double a[3][3], double transpose[3][3]) {
     for (int i = 0; i < 3; ++i) {
         for (int j = 0; j < 3; ++j) {
@@ -157,11 +159,29 @@ void Matrix::sum_22_22(double a[2][2], double b[2][2], double result[2][2]) {
     }
 }
 
-void Matrix::divMatrix(double a[2][2], double b[2][2], double result[2][2]) {
-    for (int i = 0; i < 3; i++) {
-        for (int j = 0; j < 3; j++) {
+void Matrix::getCofactor(double A[2][2], double temp[2][2], int p, int q, int n)
+{
+    int i = 0, j = 0;
 
-            result[i][j] = (a[i][j] / (b[i][j]);
+    // Looping for each element of the matrix
+    for (int row = 0; row < n; row++)
+    {
+        for (int col = 0; col < n; col++)
+        {
+            //  Copying into temporary matrix only those element
+            //  which are not in given row and column
+            if (row != p && col != q)
+            {
+                temp[i][j++] = A[row][col];
+
+                // Row is filled, so increase row index and
+                // reset col index
+                if (j == n - 1)
+                {
+                    j = 0;
+                    i++;
+                }
+            }
         }
     }
 }
@@ -175,7 +195,7 @@ double Matrix::determinant(double A[2][2], int n)
     if (n == 1)
         return A[0][0];
 
-    float temp[2][2]; // To store cofactors
+    double temp[2][2]; // To store cofactors
 
     int sign = 1;  // To store sign multiplier
 
@@ -196,14 +216,9 @@ double Matrix::determinant(double A[2][2], int n)
 // Function to get adjoint of A[N][N] in adj[N][N].
 void Matrix::adjoint(double A[2][2],double adj[2][2])
 {
-    if (N == 1)
-    {
-        adj[0][0] = 1;
-        return;
-    }
-
     // temp is used to store cofactors of A[][]
-    int sign = 1, temp[2][2];
+    int sign = 1;
+    double temp[2][2];
 
     for (int i=0; i<2; i++)
     {
@@ -225,13 +240,13 @@ void Matrix::adjoint(double A[2][2],double adj[2][2])
 
 // Function to calculate and store inverse, returns false if
 // matrix is singular
-bool Matrix::inverse(int A[2][2], float inverse[2][2])
+bool Matrix::inverse(double A[2][2], double inverse[2][2])
 {
     // Find determinant of A[][]
-    int det = determinant(A, 2);
+    double det = determinant(A, 2);
     if (det == 0)
     {
-        cout << "Singular matrix, can't find its inverse";
+        std::cout << "Singular matrix, can't find its inverse";
         return false;
     }
 

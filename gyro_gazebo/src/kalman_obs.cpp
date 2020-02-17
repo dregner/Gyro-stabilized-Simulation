@@ -12,6 +12,7 @@
 #include <string>
 #include <fstream>
 #include <iostream>
+#include "matrix.h"
 
 double roll, pitch, yaw, roll_dot, pitch_dot, yaw_dot;
 double x1 = 0;
@@ -39,6 +40,8 @@ private:
     std_msgs::Float64 msg_servo;
 
     ignition::math::Quaterniond rpy;
+
+    Matrix matrix;
 
     /// Global variables for Kalman
 
@@ -89,271 +92,6 @@ private:
     double S[2][2] = {{1, 0},{0, 1}};
     double P[3][3] = {{1.0, 0, 0},{0, 1.0, 0},{0, 0, 1.0}};
     double I[3][3] = {{1, 0, 0},{0, 1, 0},{0, 0, 1}};
-
-    void multiply_23_33(double a[2][3], double b[3][3], double result[2][3]) {
-        for (int i = 0; i < 2; i++) {
-            for (int j = 0; j < 3; j++) {
-                result[i][j] = 0;
-                for (int k = 0; k < 3; k++)
-                    result[i][j] += a[i][k] *
-                                    b[k][j];
-            }
-        }
-    }
-
-    void multiply_23_31(double a[2][3], double b[3][1], double result[2][1]) {
-        for (int i = 0; i < 2; i++) {
-            for (int j = 0; j < 1; j++) {
-                result[i][j] = 0;
-                for (int k = 0; k < 3; k++)
-                    result[i][j] += a[i][k] *
-                                    b[k][j];
-            }
-        }
-    }
-
-    void multiply_33_32(double a[3][3], double b[3][2], double result[3][2]) {
-        for (int i = 0; i < 3; i++) {
-            for (int j = 0; j < 2; j++) {
-                result[i][j] = 0;
-                for (int k = 0; k < 3; k++)
-                    result[i][j] += a[i][k] *
-                                    b[k][j];
-            }
-        }
-    }
-
-    void multiply_33_33(double a[3][3], double b[3][3], double result[3][3]) {
-        for (int i = 0; i < 3; i++) {
-            for (int j = 0; j < 3; j++) {
-                result[i][j] = 0;
-                for (int k = 0; k < 3; k++)
-                    result[i][j] += a[i][k] *
-                                    b[k][j];
-            }
-        }
-    }
-
-    void multiply_33_31(double a[3][3], double b[3][1], double result[3][1]) {
-        for (int i = 0; i < 3; i++) {
-            for (int j = 0; j < 1; j++) {
-                result[i][j] = 0;
-                for (int k = 0; k < 3; k++)
-                    result[i][j] += a[i][k] *
-                                    b[k][j];
-            }
-        }
-    }
-
-    void multiply_23_32(double a[2][3], double b[3][2], double result[2][2]) {
-        for (int i = 0; i < 2; i++) {
-            for (int j = 0; j < 2; j++) {
-                result[i][j] = 0;
-                for (int k = 0; k < 3; k++)
-                    result[i][j] += a[i][k] *
-                                    b[k][j];
-            }
-        }
-    }
-
-    void multiply_32_21(double a[3][2], double b[2][1], double result[3][1]) {
-        for (int i = 0; i < 3; i++) {
-            for (int j = 0; j < 1; j++) {
-                result[i][j] = 0;
-                for (int k = 0; k < 2; k++)
-                    result[i][j] += a[i][k] *
-                                    b[k][j];
-            }
-        }
-    }
-
-    void multiply_31_11(double a[3][1], double b, double result[3][1]) {
-        for (int i = 0; i < 3; i++) {
-            for (int j = 0; j < 1; j++) {
-                result[i][j] = a[i][j] * b;
-            }
-        }
-    }
-
-    void multiply_32_23(double a[3][2], double b[2][3], double result[3][3]) {
-        for (int i = 0; i < 3; i++) {
-            for (int j = 0; j < 3; j++) {
-                result[i][j] = 0;
-                for (int k = 0; k < 2; k++)
-                    result[i][j] += a[i][k] *
-                                    b[k][j];
-            }
-        }
-    }
-    void multiply_32_22(double a[3][2], double b[2][2], double result[3][2]) {
-        for (int i = 0; i < 3; i++) {
-            for (int j = 0; j < 2; j++) {
-                result[i][j] = 0;
-                for (int k = 0; k < 2; k++)
-                    result[i][j] += a[i][k] *
-                                    b[k][j];
-            }
-        }
-    }
-
-    void transpose_33(double a[3][3], double transpose[3][3]) {
-        for (int i = 0; i < 3; ++i) {
-            for (int j = 0; j < 3; ++j) {
-                transpose[j][i] = a[i][j];
-            }
-        }
-    }
-
-    void transpose_23(double a[2][3], double transpose[3][2]) {
-        for (int i = 0; i < 2; ++i) {
-            for (int j = 0; j < 3; ++j) {
-                transpose[j][i] = a[i][j];
-            }
-        }
-    }
-
-    void sub_33_33(double a[3][3], double b[3][3], double result[3][3]) {
-        for (int i = 0; i < 3; ++i) {
-            for (int j = 0; j < 3; ++j) {
-                result[i][j] = a[i][j] - b[i][j];
-            }
-        }
-    }
-
-    void sub_21_21(double a[2][1], double b[2][1], double result[2][1]) {
-        for (int i = 0; i < 2; ++i) {
-            for (int j = 0; j < 1; ++j) {
-                result[i][j] = a[i][j] - b[i][j];
-            }
-        }
-    }
-
-    void sum_33_33(double a[3][3], double b[3][3], double result[3][3]) {
-        for (int i = 0; i < 3; ++i) {
-            for (int j = 0; j < 3; ++j) {
-                result[i][j] = a[i][j] + b[i][j];
-            }
-        }
-    }
-
-    void sum_31_31(double a[3][1], double b[3][1], double result[3][1]) {
-        for (int i = 0; i < 3; ++i) {
-            for (int j = 0; j < 1; ++j) {
-                result[i][j] = a[i][j] + b[i][j];
-            }
-        }
-    }
-
-    void sum_22_22(double a[2][2], double b[2][2], double result[2][2]) {
-        for (int i = 0; i < 2; ++i) {
-            for (int j = 0; j < 2; ++j) {
-                result[i][j] = a[i][j] + b[i][j];
-            }
-        }
-    }
-
-    void getCofactor(double A[2][2], double temp[2][2], int p, int q, int n)
-    {
-        int i = 0, j = 0;
-
-        // Looping for each element of the matrix
-        for (int row = 0; row < n; row++)
-        {
-            for (int col = 0; col < n; col++)
-            {
-                //  Copying into temporary matrix only those element
-                //  which are not in given row and column
-                if (row != p && col != q)
-                {
-                    temp[i][j++] = A[row][col];
-
-                    // Row is filled, so increase row index and
-                    // reset col index
-                    if (j == n - 1)
-                    {
-                        j = 0;
-                        i++;
-                    }
-                }
-            }
-        }
-    }
-
-    //finding determinant
-    double determinant(double A[2][2], int n)
-    {
-        double D = 0; // Initialize result
-
-        //  Base case : if matrix contains single element
-        if (n == 1)
-            return A[0][0];
-
-        double temp[2][2]; // To store cofactors
-
-        int sign = 1;  // To store sign multiplier
-
-        // Iterate for each element of first row
-        for (int f = 0; f < n; f++)
-        {
-            // Getting Cofactor of A[0][f]
-            getCofactor(A, temp, 0, f, n);
-            D += sign * A[0][f] * determinant(temp, n - 1);
-
-            // terms are to be added with alternate sign
-            sign = -sign;
-        }
-
-        return D;
-    }
-
-// Function to get adjoint of A[N][N] in adj[N][N].
-    void adjoint(double A[2][2],double adj[2][2])
-    {
-        // temp is used to store cofactors of A[][]
-        int sign = 1;
-        double temp[2][2];
-
-        for (int i=0; i<2; i++)
-        {
-            for (int j=0; j<2; j++)
-            {
-                // Get cofactor of A[i][j]
-                getCofactor(A, temp, i, j, 3);
-
-                // sign of adj[j][i] positive if sum of row
-                // and column indexes is even.
-                sign = ((i+j)%2==0)? 1: -1;
-
-                // Interchanging rows and columns to get the
-                // transpose of the cofactor matrix
-                adj[j][i] = (sign)*(determinant(temp, 2-1));
-            }
-        }
-    }
-
-// Function to calculate and store inverse, returns false if
-// matrix is singular
-    bool inverse(double A[2][2], double inverse[2][2])
-    {
-        // Find determinant of A[][]
-        double det = determinant(A, 2);
-        if (det == 0)
-        {
-            std::cout << "Singular matrix, can't find its inverse";
-            return false;
-        }
-
-        // Find adjoint
-        double adj[2][2];
-        adjoint(A, adj);
-
-        // Find Inverse using formula "inverse(A) = adj(A)/det(A)"
-        for (int i=0; i<2; i++)
-            for (int j=0; j<2; j++)
-                inverse[i][j] = adj[i][j]/double(det);
-
-        return true;
-    }
 
 
 public:
@@ -414,44 +152,43 @@ public:
         double y[2][1] = {{y_1},
                           {y_2}};
         /// S = (jac_C * P) * trans(jac_C) + noise_exit;
-        transpose_23(jac_C, jac_Ct);
-        multiply_23_33(jac_C, P, s1);
-        multiply_23_32(s1, jac_Ct, S1);
-        sum_22_22(S1, noise_exit, S);
+        matrix.transpose_23(jac_C, jac_Ct);
+        matrix.multiply_23_33(jac_C, P, s1);
+        matrix.multiply_23_32(s1, jac_Ct, S1);
+        matrix.sum_22_22(S1, noise_exit, S);
 
         /// K = (P * trans(jac_C)) * inv(S);
-        multiply_33_32(P, jac_Ct, k1);
-        inverse(S, Si);
-        multiply_32_22(k1, Si, K);
+        matrix.multiply_33_32(P, jac_Ct, k1);
+        matrix.inverse(S, Si);
+        matrix.multiply_32_22(k1, Si, K);
 
         /// mat xap = xa + K * (y - jac_C * xa);
-        multiply_23_31(jac_C, xa, xap1);
-        sub_21_21(y, xap1, xap2);
-        multiply_32_21(K, xap2, xap3);
-        sum_31_31(xa, xap3, xap);
+        matrix.multiply_23_31(jac_C, xa, xap1);
+        matrix.sub_21_21(y, xap1, xap2);
+        matrix.multiply_32_21(K, xap2, xap3);
+        matrix.sum_31_31(xa, xap3, xap);
 
         /// mat Pp = (I - K * jac_C) * P;
-        multiply_32_23(K, jac_C, Pp1);
-        sub_33_33(I, Pp1, Pp2);
-        multiply_33_33(Pp2, P, Pp);
+        matrix.multiply_32_23(K, jac_C, Pp1);
+        matrix.sub_33_33(I, Pp1, Pp2);
+        matrix.multiply_33_33(Pp2, P, Pp);
 
         /// xp = A * xap + B * theta;
-        multiply_33_31(A, xap, xp1);
-        multiply_31_11(B, theta, Bt);
-        sum_31_31(xp1, Bt, xp);
+        matrix.multiply_33_31(A, xap, xp1);
+        matrix.multiply_31_11(B, theta, Bt);
+        matrix.sum_31_31(xp1, Bt, xp);
 
         /// P = ((A * Pp) * trans(A)) + noise_state;
-        multiply_33_33(A, Pp, P1);
-        transpose_33(A, At);
-        multiply_33_33(P1, At, P2);
-        sum_33_33(P2, noise_state, P);
+        matrix.multiply_33_33(A, Pp, P1);
+        matrix.transpose_33(A, At);
+        matrix.multiply_33_33(P1, At, P2);
+        matrix.sum_33_33(P2, noise_state, P);
 
         x1 = xp[0][0];
         x2 = xp[1][0];
         x3 = xp[2][0];
 
     }
-
 
 };
 

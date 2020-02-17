@@ -179,12 +179,12 @@ preinstall: gtest/preinstall
 CMakeFiles/kalman.dir/all:
 	$(MAKE) -f CMakeFiles/kalman.dir/build.make CMakeFiles/kalman.dir/depend
 	$(MAKE) -f CMakeFiles/kalman.dir/build.make CMakeFiles/kalman.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/vant3d/catkin_ws/src/Gyro-stabilized-Simulation/gyro_gazebo/cmake-build-debug/CMakeFiles --progress-num=14,15 "Built target kalman"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/vant3d/catkin_ws/src/Gyro-stabilized-Simulation/gyro_gazebo/cmake-build-debug/CMakeFiles --progress-num=14,15,16 "Built target kalman"
 .PHONY : CMakeFiles/kalman.dir/all
 
 # Build rule for subdir invocation for target.
 CMakeFiles/kalman.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/vant3d/catkin_ws/src/Gyro-stabilized-Simulation/gyro_gazebo/cmake-build-debug/CMakeFiles 2
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/vant3d/catkin_ws/src/Gyro-stabilized-Simulation/gyro_gazebo/cmake-build-debug/CMakeFiles 3
 	$(MAKE) -f CMakeFiles/Makefile2 CMakeFiles/kalman.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/vant3d/catkin_ws/src/Gyro-stabilized-Simulation/gyro_gazebo/cmake-build-debug/CMakeFiles 0
 .PHONY : CMakeFiles/kalman.dir/rule
@@ -206,7 +206,7 @@ CMakeFiles/kalman.dir/clean:
 CMakeFiles/read_states.dir/all:
 	$(MAKE) -f CMakeFiles/read_states.dir/build.make CMakeFiles/read_states.dir/depend
 	$(MAKE) -f CMakeFiles/read_states.dir/build.make CMakeFiles/read_states.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/vant3d/catkin_ws/src/Gyro-stabilized-Simulation/gyro_gazebo/cmake-build-debug/CMakeFiles --progress-num=20,21 "Built target read_states"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/vant3d/catkin_ws/src/Gyro-stabilized-Simulation/gyro_gazebo/cmake-build-debug/CMakeFiles --progress-num=21,22 "Built target read_states"
 .PHONY : CMakeFiles/read_states.dir/all
 
 # Build rule for subdir invocation for target.
@@ -233,7 +233,7 @@ CMakeFiles/read_states.dir/clean:
 CMakeFiles/observer_state.dir/all:
 	$(MAKE) -f CMakeFiles/observer_state.dir/build.make CMakeFiles/observer_state.dir/depend
 	$(MAKE) -f CMakeFiles/observer_state.dir/build.make CMakeFiles/observer_state.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/vant3d/catkin_ws/src/Gyro-stabilized-Simulation/gyro_gazebo/cmake-build-debug/CMakeFiles --progress-num=16,17 "Built target observer_state"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/vant3d/catkin_ws/src/Gyro-stabilized-Simulation/gyro_gazebo/cmake-build-debug/CMakeFiles --progress-num=17,18 "Built target observer_state"
 .PHONY : CMakeFiles/observer_state.dir/all
 
 # Build rule for subdir invocation for target.
@@ -260,7 +260,7 @@ CMakeFiles/observer_state.dir/clean:
 CMakeFiles/read-imu.dir/all:
 	$(MAKE) -f CMakeFiles/read-imu.dir/build.make CMakeFiles/read-imu.dir/depend
 	$(MAKE) -f CMakeFiles/read-imu.dir/build.make CMakeFiles/read-imu.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/vant3d/catkin_ws/src/Gyro-stabilized-Simulation/gyro_gazebo/cmake-build-debug/CMakeFiles --progress-num=18,19 "Built target read-imu"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/vant3d/catkin_ws/src/Gyro-stabilized-Simulation/gyro_gazebo/cmake-build-debug/CMakeFiles --progress-num=19,20 "Built target read-imu"
 .PHONY : CMakeFiles/read-imu.dir/all
 
 # Build rule for subdir invocation for target.
@@ -1097,7 +1097,7 @@ CMakeFiles/sensor_msgs_generate_messages_cpp.dir/clean:
 CMakeFiles/start_gyro.dir/all:
 	$(MAKE) -f CMakeFiles/start_gyro.dir/build.make CMakeFiles/start_gyro.dir/depend
 	$(MAKE) -f CMakeFiles/start_gyro.dir/build.make CMakeFiles/start_gyro.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/vant3d/catkin_ws/src/Gyro-stabilized-Simulation/gyro_gazebo/cmake-build-debug/CMakeFiles --progress-num=22,23 "Built target start_gyro"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/vant3d/catkin_ws/src/Gyro-stabilized-Simulation/gyro_gazebo/cmake-build-debug/CMakeFiles --progress-num=23,24 "Built target start_gyro"
 .PHONY : CMakeFiles/start_gyro.dir/all
 
 # Build rule for subdir invocation for target.
