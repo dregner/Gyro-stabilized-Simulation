@@ -96,16 +96,17 @@ private:
 
 public:
     Read_Kalman() {
-        sub_theta1 = n_kalman.subscribe("/moto/joint_state", 10, &Read_Kalman::read_theta, this);
+        sub_theta1 = n_kalman.subscribe("/moto/joint_states", 10, &Read_Kalman::read_theta, this);
         sub_imu1 = n_kalman.subscribe("/imu_base", 10, &Read_Kalman::callback, this);
         obs.open("observer_states.txt");
     }
 
     ~Read_Kalman() {}
 
-    void read_theta(const sensor_msgs::JointState::ConstPtr &joint) {
+    void read_theta(const sensor_msgs::JointStateConstPtr &joint) {
         theta = joint->position[1];
         y_2 = theta;
+//        ROS_INFO("x2: [%f]", y_2);
     }
 
     void callback(const sensor_msgs::Imu::ConstPtr &imu) {
