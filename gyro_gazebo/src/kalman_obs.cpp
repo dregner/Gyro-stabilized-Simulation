@@ -58,12 +58,12 @@ private:
 /// Ruido de entrada
     double noise_state[3][3] = {{10e-8,0,0},{0,10e-11, 0},{0,0,10e-9}};
 
-    double noise_exit[2][2] = {{10e-4, 0},{0,10e-4}};
+    double noise_exit[2][2] = {{10e-8, 0},{0,10e-8}};
 
 /// ------- Variaveis Auxiliares ---------
     double jac_Ct[3][2] = {{0,0},{0,0},{0,0}};
-    double s1[2][3] = {{0,0,0},{0,0,0}}; //Aux S
-    double S1[2][2] = {{0,0},{0,0}}; //Aux S
+    double S1[2][3] = {{0,0,0},{0,0,0}}; //Aux S1
+    double S2[2][2] = {{0,0},{0,0}}; //Aux S2
     double Si[2][2] = {{0,0},{0,0}}; //Inverse S
 
 /// K = (P * trans(jac_C)) * inv(S);
@@ -90,7 +90,7 @@ private:
     double At[3][3] = {{0,0,0},{0,0,0},{0,0,0}};
     double P2[3][3] = {{0,0,0},{0,0,0},{0,0,0}};
     double S[2][2] = {{1, 0},{0, 1}};
-    double P[3][3] = {{1.0, 0, 0},{0, 1.0, 0},{0, 0, 1.0}};
+    double P[3][3] = {{1, 0, 0},{0, 1, 0},{0, 0, 1}};
     double I[3][3] = {{1, 0, 0},{0, 1, 0},{0, 0, 1}};
 
 
@@ -154,9 +154,9 @@ public:
                           {y_2}};
         /// S = (jac_C * P) * trans(jac_C) + noise_exit;
         matrix.transpose_23(jac_C, jac_Ct);
-        matrix.multiply_23_33(jac_C, P, s1);
-        matrix.multiply_23_32(s1, jac_Ct, S1);
-        matrix.sum_22_22(S1, noise_exit, S);
+        matrix.multiply_23_33(jac_C, P, S1);
+        matrix.multiply_23_32(S1, jac_Ct, S2);
+        matrix.sum_22_22(S2, noise_exit, S);
 
         /// K = (P * trans(jac_C)) * inv(S);
         matrix.multiply_33_32(P, jac_Ct, k1);

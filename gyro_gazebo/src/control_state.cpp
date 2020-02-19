@@ -39,7 +39,7 @@ public:
 
     void read_theta(const sensor_msgs::JointStateConstPtr &joint) {
         theta = joint->position[1];
-        theta_dot = joint->velocity[1]
+        theta_dot = joint->velocity[1];
 //        ROS_INFO("x2: [%f]", y_2);
     }
 
