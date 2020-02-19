@@ -1,5 +1,6 @@
 #include <ros/ros.h>
 #include <sensor_msgs/Imu.h>
+#include <sensor_msgs/JointState.h>
 #include <ignition/math/Quaternion.hh>
 #include <std_msgs/Float64.h>
 #include <ros/node_handle.h>
@@ -7,30 +8,40 @@
 #include <message_filters/synchronizer.h>
 #include <message_filters/sync_policies/exact_time.h>
 
+
 double roll, pitch, yaw, roll_dot, pitch_dot, yaw_dot;
-double x1, x2, x3, theta;
+double x1, x2, x3, theta, theta_dot;
 const float K1 = -4.2762;
 const float K2 = -1.1504;
 const float K3 = -1.5896;
 double RadToDeg = 180 / M_PI;
-int countt; int Ts = 5;
-    
+int countt;
+int Ts = 5;
+
 class Control_SS {
 private:
     ros::NodeHandle control;
 
     ros::Subscriber sub_imu;
+    ros::Subscriber sub_servo;
     ros::Publisher servo;
     std_msgs::Float64 msg_servo;
 
     ignition::math::Quaterniond rpy;
 public:
     Control_SS() {
+        sub_servo = control.subscribe("/moto/joint_states", 1000, &Control_SS::read_theta, this);
         sub_imu = control.subscribe("/imu_base", 1000, &Control_SS::callback, this);
         servo = control.advertise<std_msgs::Float64>("/moto/gyro_angle/command", 1000);
     }
 
     ~Control_SS() {}
+
+    void read_theta(const sensor_msgs::JointStateConstPtr &joint) {
+        theta = joint->position[1];
+        theta_dot = joint->velocity[1]
+//        ROS_INFO("x2: [%f]", y_2);
+    }
 
     void callback(const sensor_msgs::Imu::ConstPtr &imu) {
 
@@ -40,17 +51,18 @@ public:
 //        ros::Rate loop_rate(1000);
 //        if (countt > Ts) {
 //            countt = 0;
-            roll = rpy.Roll();
+        roll = rpy.Roll();
 //            roll *= RadToDeg;
 
-            roll_dot = imu->angular_velocity.x;
-
+        roll_dot = imu->angular_velocity.x;
+        if (countt > Ts) {
             theta += (-K1 * roll - K2 * theta - K3 * roll_dot);
 
             theta = std::min(0.9, std::max(-0.9, theta));
             msg_servo.data = theta;
             servo.publish(msg_servo);
-//        }
+            countt = 0;
+        }
 
 //        loop_rate.sleep();
         countt++;
@@ -66,7 +78,7 @@ int main(int argc, char **argv) {
     ros::init(argc, argv, "control_state");
     Control_SS controlSs;
 
-    while(ros::ok()){
+    while (ros::ok()) {
         ros::spinOnce();
     }
     return 0;
