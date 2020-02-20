@@ -31,7 +31,7 @@ private:
 public:
     Control_SS() {
         sub_servo = control.subscribe("/moto/joint_states", 1000, &Control_SS::read_theta, this);
-        sub_imu = control.subscribe("/imu_base", 1000, &Control_SS::callback, this);
+        sub_imu = control.subscribe("/moto/moto/imu_base", 1000, &Control_SS::callback, this);
         servo = control.advertise<std_msgs::Float64>("/moto/gyro_angle/command", 1000);
     }
 

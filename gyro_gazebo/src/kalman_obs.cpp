@@ -97,7 +97,7 @@ private:
 public:
     Read_Kalman() {
         sub_theta1 = n_kalman.subscribe("/moto/joint_states", 10, &Read_Kalman::read_theta, this);
-        sub_imu1 = n_kalman.subscribe("/imu_base", 10, &Read_Kalman::callback, this);
+        sub_imu1 = n_kalman.subscribe("/moto/moto/imu_base", 10, &Read_Kalman::callback, this);
         obs.open("observer_states.txt");
     }
 

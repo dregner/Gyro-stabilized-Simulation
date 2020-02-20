@@ -47,7 +47,7 @@ private:
 public:
     Read_States() {
         sub_theta1 = nh.subscribe("/moto/joint_states", 10, &Read_States::read_theta, this);
-        sub_imu1 = nh.subscribe("/imu_base", 10, &Read_States::callback, this);
+        sub_imu1 = nh.subscribe("/moto/moto/imu_base", 10, &Read_States::callback, this);
         states.open("observer_states.txt");
     }
 

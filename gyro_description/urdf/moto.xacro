@@ -7,26 +7,32 @@
     <xacro:property name="PI" value="3.1415926535897931"/>
 
     <!-- Properties of base -->
-    <xacro:property name="height" value=".2"/>
-    <xacro:property name="width" value="1.2"/>
-    <xacro:property name="length" value="2"/>
-    <xacro:property name="mass_base" value="10"/>
+    <xacro:property name="height" value="2"/>
+    <xacro:property name="width" value="12"/>
+    <xacro:property name="length" value="20"/>
+    <xacro:property name="mass_base" value="100"/>
 
     <!-- Properties of wheels    -->
-    <xacro:property name="radius" value="0.3"/>
-    <xacro:property name="h" value=".05"/>
-    <xacro:property name="mass_wheel" value="0.2"/>
+    <xacro:property name="radius" value="3"/>
+    <xacro:property name="h" value=".5"/>
+    <xacro:property name="mass_wheel" value="2"/>
 
     <!-- Properties from gyro support -->
-    <xacro:property name="mass_support" value="1"/>
-    <xacro:property name="h_support" value="0.5"/>
-    <xacro:property name="w_support" value="0.1"/>
+    <xacro:property name="mass_support" value="10"/>
+    <xacro:property name="h_support" value="5"/>
+    <xacro:property name="w_support" value="1"/>
+    <xacro:property name="effort_support" value="20000"/>
+    <xacro:property name="velocity_support" value="1000"/>
 
     <!-- Propertis of a gyroscope -->
-    <xacro:property name="radius_gyro" value=".4"/>
-    <xacro:property name="h_gyro" value=".1"/>
-    <xacro:property name="mass_gyro" value="3"/>
-
+    <xacro:property name="radius_gyro" value="4"/>
+    <xacro:property name="h_gyro" value="1"/>
+    <xacro:property name="mass_gyro" value="30"/>
+    <xacro:property name="effort_gyro" value="2000"/>
+    <xacro:property name="velocity_gyro" value="1000"/>
+    <xacro:property name="k_velocity_gyro" value="100"/>
+    <xacro:property name="damp_gyro" value="0.1"/>
+    <xacro:property name="fric_gyro" value="0.0"/>
 
     <!-- Include Gazebo association -->
     <xacro:include filename="$(find gyro_description)/urdf/moto.gazebo"/>
@@ -48,7 +54,7 @@
             gyroscope_turn_on_bias_sigma="0.0087"
             accelerometer_noise_density="0.004"
             accelerometer_random_walk="0.006"
-            accelerometer_bias_correlation_time="300.0"
+            accel_bias_correlation_time="300.0"
             accelerometer_turn_on_bias_sigma="0.1960">
         <inertia ixx="0.00001" ixy="0.0" ixz="0.0" iyy="0.00001" iyz="0.0" izz="0.00001"/>
         <origin xyz="${length/4} 0 ${height}" rpy="0 0 0"/>
@@ -223,7 +229,7 @@
         <parent link="support_right_link"/>
         <child link="axel_gyro_link"/>
         <axis xyz="0.0 1 0.0"/>
-        <limit lower="-${PI/2}" upper="${PI/2}" effort="20.0" velocity="100.0"/>
+        <limit lower="-${PI/2}" upper="${PI/2}" effort="${effort_support}" velocity="${velocity_support}"/>
     </joint>
 
     <link name="axel_gyro_link">
@@ -309,9 +315,9 @@
         <parent link="support_gyro_link"/>
         <child link="gyro_link"/>
         <axis xyz="0.0 0.0 1"/>
-        <limit effort="100.0" velocity="500.0"/>
-        <safety_controller k_velocity="100.0"/>
-        <dynamics damping="0.1" friction="0.0"/>
+        <limit effort="${effort_gyro}" velocity="${velocity_gyro}"/>
+        <safety_controller k_velocity="${k_velocity_gyro}"/>
+        <dynamics damping="${damp_gyro}" friction="${fric_gyro}"/>
     </joint>
 
     <link name="gyro_link">

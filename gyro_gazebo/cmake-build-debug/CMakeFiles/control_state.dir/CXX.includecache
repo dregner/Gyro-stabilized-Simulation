@@ -11,6 +11,8 @@ ros/ros.h
 -
 sensor_msgs/Imu.h
 -
+sensor_msgs/JointState.h
+-
 ignition/math/Quaternion.hh
 -
 std_msgs/Float64.h
@@ -886,6 +888,24 @@ geometry_msgs/Quaternion.h
 geometry_msgs/Vector3.h
 -
 geometry_msgs/Vector3.h
+-
+
+/opt/ros/kinetic/include/sensor_msgs/JointState.h
+string
+-
+vector
+-
+map
+-
+ros/types.h
+-
+ros/serialization.h
+-
+ros/builtin_message_traits.h
+-
+ros/message_operations.h
+-
+std_msgs/Header.h
 -
 
 /opt/ros/kinetic/include/std_msgs/Float64.h
