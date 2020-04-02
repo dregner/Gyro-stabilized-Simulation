@@ -48,7 +48,7 @@ public:
     Read_States() {
         sub_theta1 = nh.subscribe("/moto/joint_states", 10, &Read_States::read_theta, this);
         sub_imu1 = nh.subscribe("/moto/moto/imu_base", 10, &Read_States::callback, this);
-        states.open("observer_states.txt");
+        states.open("states.txt");
     }
 
     ~Read_States() {}
@@ -83,7 +83,6 @@ int main(int argc, char **argv) {
 
     ros::init(argc, argv, "read_states");
     ros::NodeHandle nh;
-    states.open("real_states.txt");
     Read_States ReadStates;
 
     /*

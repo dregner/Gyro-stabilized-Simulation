@@ -7,29 +7,52 @@
     <xacro:property name="PI" value="3.1415926535897931"/>
 
     <!-- Properties of base -->
+    <xacro:property name="height" value=".2"/>
+    <xacro:property name="width" value="1.2"/>
+    <xacro:property name="length" value="2"/>
+    <xacro:property name="mass_base" value="10"/>
+
+    <!-- Properties of wheels    -->
+    <xacro:property name="radius" value="0.3"/>
+    <xacro:property name="h" value=".05"/>
+    <xacro:property name="mass_wheel" value="0.2"/>
+
+    <!-- Properties from gyro support -->
+    <xacro:property name="mass_support" value="1"/>
+    <xacro:property name="h_support" value="0.5"/>
+    <xacro:property name="w_support" value="0.1"/>
+
+    <!-- Propertis of a gyroscope -->
+    <xacro:property name="radius_gyro" value=".4"/>
+    <xacro:property name="h_gyro" value=".1"/>
+    <xacro:property name="mass_gyro" value="3"/>
+
+<!--    &lt;!&ndash; Properties of base &ndash;&gt;
     <xacro:property name="height" value="2"/>
     <xacro:property name="width" value="12"/>
     <xacro:property name="length" value="20"/>
     <xacro:property name="mass_base" value="100"/>
 
-    <!-- Properties of wheels    -->
+    &lt;!&ndash; Properties of wheels    &ndash;&gt;
     <xacro:property name="radius" value="3"/>
     <xacro:property name="h" value=".5"/>
     <xacro:property name="mass_wheel" value="2"/>
 
-    <!-- Properties from gyro support -->
+    &lt;!&ndash; Properties from gyro support &ndash;&gt;
     <xacro:property name="mass_support" value="10"/>
     <xacro:property name="h_support" value="5"/>
     <xacro:property name="w_support" value="1"/>
-    <xacro:property name="effort_support" value="20000"/>
-    <xacro:property name="velocity_support" value="1000"/>
 
-    <!-- Propertis of a gyroscope -->
+
+    &lt;!&ndash; Propertis of a gyroscope &ndash;&gt;
     <xacro:property name="radius_gyro" value="4"/>
     <xacro:property name="h_gyro" value="1"/>
-    <xacro:property name="mass_gyro" value="30"/>
-    <xacro:property name="effort_gyro" value="2000"/>
-    <xacro:property name="velocity_gyro" value="1000"/>
+    <xacro:property name="mass_gyro" value="30"/>-->
+
+    <xacro:property name="effort_support" value="200"/>
+    <xacro:property name="velocity_support" value="100"/>
+    <xacro:property name="effort_gyro" value="200"/>
+    <xacro:property name="velocity_gyro" value="200"/>
     <xacro:property name="k_velocity_gyro" value="100"/>
     <xacro:property name="damp_gyro" value="0.1"/>
     <xacro:property name="fric_gyro" value="0.0"/>

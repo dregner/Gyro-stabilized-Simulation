@@ -1,2 +1,2 @@
 - setup-file:
-    local-name: /home/vant3d/catkin_ws/src/Gyro-stabilized-Simulation/gyro_gazebo/cmake-build-debug/devel/setup.sh
+    local-name: /home/daniel/catkin_ws/src/Gyro-stabilized-Simulation/gyro_gazebo/cmake-build-debug/devel/setup.sh

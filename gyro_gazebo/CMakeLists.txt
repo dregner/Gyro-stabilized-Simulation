@@ -59,6 +59,12 @@ target_link_libraries(read_states ${catkin_LIBRARIES})
 add_executable(kalman src/kalman_obs.cpp src/matrix.cpp)
 target_link_libraries(kalman ${catkin_LIBRARIES})
 
+add_executable(gimbal src/gimbal_control.cpp)
+target_link_libraries(gimbal ${catkin_LIBRARIES})
+
+add_executable(extended_kalman src/extended_kalman_obs.cpp src/matrix.cpp)
+target_link_libraries(extended_kalman ${catkin_LIBRARIES})
+
 
 
 

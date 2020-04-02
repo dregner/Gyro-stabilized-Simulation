@@ -6,9 +6,9 @@
 
 #IncludeRegexTransform: 
 
-/home/vant3d/catkin_ws/src/Gyro-stabilized-Simulation/gyro_gazebo/src/imu/read-imu.cpp
+/home/daniel/catkin_ws/src/Gyro-stabilized-Simulation/gyro_gazebo/src/imu/read-imu.cpp
 ros/ros.h
-/home/vant3d/catkin_ws/src/Gyro-stabilized-Simulation/gyro_gazebo/src/imu/ros/ros.h
+/home/daniel/catkin_ws/src/Gyro-stabilized-Simulation/gyro_gazebo/src/imu/ros/ros.h
 ros/node_handle.h
 -
 sensor_msgs/Imu.h

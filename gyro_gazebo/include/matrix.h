@@ -26,6 +26,8 @@ public:
 
     void multiply_31_11(double a[3][1], double b, double result[3][1]);
 
+    void multiply_33_11(double a[3][3], double b, double result[3][3]);
+
     void multiply_32_23(double a[3][2], double b[2][3], double result[3][3]);
 
     void multiply_32_22(double a[3][2], double b[2][2], double result[3][2]);

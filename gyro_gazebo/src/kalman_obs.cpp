@@ -19,7 +19,7 @@ double x1 = 0;
 double x2 = 0;
 double x3 = 0;
 double theta;
-double y_1, y_2;
+double y_1, y_2, y_3;
 double xe1, xe2, xe3;
 const double K1 = -4.2762;
 const double K2 = -1.1504;
@@ -43,10 +43,13 @@ private:
 
     Matrix matrix;
 
-    /// Global variables for Kalman
-
-    double A[3][3] = {{1.0053,0, 0.01},{0,1, 0},{1.0652, 0, 1.053}};
-    double B[3][1] = {{-0.0039},{0.01},{-0.7896}};
+    /// Globa28l variables for Kalman
+/// A =
+///    1.0001       0    0.0050
+///    0    1.0000         0
+///    0.05  0    1.0001
+    double A[3][3] = {{1.0001,0, 0.005},{0,1, 0},{0.0528, 0, 1.0001}};
+    double B[3][1] = {{-0.001},{0.005},{-0.0438}};
 
 
 ///--------SAIDAS h(x)--------
@@ -98,7 +101,7 @@ public:
     Read_Kalman() {
         sub_theta1 = n_kalman.subscribe("/moto/joint_states", 10, &Read_Kalman::read_theta, this);
         sub_imu1 = n_kalman.subscribe("/moto/moto/imu_base", 10, &Read_Kalman::callback, this);
-        obs.open("observer_states.txt");
+        obs.open("kalman_state.txt");
     }
 
     ~Read_Kalman() {}
@@ -118,16 +121,17 @@ public:
         /// READ y(t)
 
         y_1 = rpy.Roll();
-//      x3 = imu->angular_velocity.x;
+        y_3 = imu->angular_velocity.x;//      x3 = imu->angular_velocity.x;
         /// OBSERVA
         kalman();
 //        observer();
 
         if (obs.is_open()) {
-            obs << tout << "\t" << x1 << "\t" << x2 << "\t" << x3 << "\n";
+            obs << tout << "\t" << x1 << "\t" << x2 << "\t" << x3 << "\t" << y_1 << "\t" << y_2 << "\t" << y_3 << "\n";
         }
         tout++;
-        ROS_INFO("x1 [%f], x2: [%f], x3: [%f]", x1, x2, x3);
+        ROS_INFO("y1: [%f], y2: [%f]", y_1, y_2);
+        ROS_INFO("x1: [%f], x2: [%f], x3: [%f]", x1, x2, x3);
     }
 
     void observer() {
@@ -197,6 +201,8 @@ int main(int argc, char **argv) {
 
     ros::init(argc, argv, "kalman_observer");
     Read_Kalman Kalman;
+
+
 
     while (ros::ok()) {
         ros::spinOnce();

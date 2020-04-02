@@ -93,6 +93,13 @@ void Matrix::multiply_31_11(double a[3][1], double b, double result[3][1]) {
         }
     }
 }
+void Matrix::multiply_33_11(double a[3][3], double b, double result[3][3]) {
+    for (int i = 0; i < 3; i++) {
+        for (int j = 0; j < 3; j++) {
+            result[i][j] = a[i][j] * b;
+        }
+    }
+}
 
 void Matrix::multiply_32_23(double a[3][2], double b[2][3], double result[3][3]) {
     for (int i = 0; i < 3; i++) {

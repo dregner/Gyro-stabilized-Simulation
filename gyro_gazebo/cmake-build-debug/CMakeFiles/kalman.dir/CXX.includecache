@@ -8,7 +8,9 @@
 
 ../include/matrix.h
 
-/home/vant3d/catkin_ws/src/Gyro-stabilized-Simulation/gyro_gazebo/src/kalman_obs.cpp
+/home/daniel/catkin_ws/src/Gyro-stabilized-Simulation/gyro_gazebo/include/matrix.h
+
+/home/daniel/catkin_ws/src/Gyro-stabilized-Simulation/gyro_gazebo/src/kalman_obs.cpp
 ros/ros.h
 -
 sensor_msgs/Imu.h
@@ -34,7 +36,17 @@ fstream
 iostream
 -
 matrix.h
-/home/vant3d/catkin_ws/src/Gyro-stabilized-Simulation/gyro_gazebo/src/matrix.h
+/home/daniel/catkin_ws/src/Gyro-stabilized-Simulation/gyro_gazebo/src/matrix.h
+
+/home/daniel/catkin_ws/src/Gyro-stabilized-Simulation/gyro_gazebo/src/matrix.cpp
+../include/matrix.h
+/home/daniel/catkin_ws/src/Gyro-stabilized-Simulation/gyro_gazebo/include/matrix.h
+string
+-
+fstream
+-
+iostream
+-
 
 /opt/ros/kinetic/include/geometry_msgs/Quaternion.h
 string
